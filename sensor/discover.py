@@ -1,5 +1,4 @@
-
-m wifi import Cell, Scheme
+from wifi import Cell, Scheme
 from collections import namedtuple
 from operator import attrgetter
 from wifi.exceptions import ConnectionError
