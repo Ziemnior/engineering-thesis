@@ -2,6 +2,7 @@ from wifi import Cell, Scheme
 from collections import namedtuple
 from operator import attrgetter
 from wifi.exceptions import ConnectionError
+
 from optparse import OptionParser
 
 
@@ -11,10 +12,10 @@ class NetworkConnection:
         self.interface = interface
         self.password = password
 
-    @staticmethod
-    def discover_avalible_networks():
+    def discover_avalible_networks(self, interface=None):
         all_networks = []
-        avalible_networks = Cell.all('wlan0')
+        interface = self.interface
+        avalible_networks = Cell.all(interface)
         for network in avalible_networks:
             all_networks.append(network)
         return all_networks
@@ -43,18 +44,25 @@ class NetworkConnection:
                 print("Trying to connect to {}").format(network.ssid)
                 scheme = Scheme.for_cell(interface, network.ssid, network, password)
                 scheme.save()
-                if not (scheme.activate()):
-                    scheme = Scheme.find(interface, network.ssid)
-                    scheme.activate()
-                    print("Connected to {}").format(network.ssid)
+                scheme.activate()
+                print("Connected to {}").format(network.ssid)
                 break
-            except:
+	    except AssertionError:
+		scheme = Scheme.find(interface, network.ssid)
+		try:
+		    scheme.activate()
+                    print("Connected to {}").format(network.ssid)
+                except ConnectionError:
+                    print("Couldn't connect to {}").format(network.ssid)
+                    scheme = Scheme.find(interface, network.ssid)
+                    scheme.delete()
+		    continue       
+	        break
+            except ConnectionError:
                 print("Couldn't connect to {}").format(network.ssid)
                 scheme = Scheme.find(interface, network.ssid)
                 scheme.delete()
-                continue
-
-
+		continue       
 if __name__ == "__main__":
     parser = OptionParser()
     parser.add_option('-p', '--prefix', dest='prefix', help="Specify gateway ssid prefix")
@@ -62,7 +70,6 @@ if __name__ == "__main__":
     parser.add_option('-q', '--password', dest='password',
                       help="Specify password for the wireless network of choice")
     options, args = parser.parse_args()
-
     wireless_connection = NetworkConnection(prefix=options.prefix, interface=options.interface,
                                             password=options.password)
     wireless_connection.connect_to_gateway()
