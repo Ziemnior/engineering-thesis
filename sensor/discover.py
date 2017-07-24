@@ -2,7 +2,6 @@ from wifi import Cell, Scheme
 from collections import namedtuple
 from operator import attrgetter
 from wifi.exceptions import ConnectionError
-
 from optparse import OptionParser
 
 
@@ -53,12 +52,8 @@ class NetworkConnection:
 		    scheme.activate()
                     print("Connected to {}").format(network.ssid)
                 except ConnectionError:
-                    print("Couldn't connect to {}").format(network.ssid)
-                    scheme = Scheme.find(interface, network.ssid)
-                    scheme.delete()
-		    continue       
-	        break
-            except ConnectionError:
+		     raise e       
+            except ConnectionError as e:
                 print("Couldn't connect to {}").format(network.ssid)
                 scheme = Scheme.find(interface, network.ssid)
                 scheme.delete()
