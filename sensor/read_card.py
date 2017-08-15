@@ -17,8 +17,7 @@ class RFIDReader():
                 if not error:
                     (error, uid) = self.rfid_reader.MFRC522_Anticoll()
                     if not error:
-                        self.send_json(uid)
-                        sleep(3)
+                        return self.send_json(uid)
             except:
                 print("Stopping...")
                 GPIO.cleanup()
@@ -27,9 +26,5 @@ class RFIDReader():
     def send_json(self, rfid_identifier):
 	data = {'sensor_id': get_sensor_id(),
               'user_id': rfid_identifier}
-        print(json.dumps(data))
-
-if __name__ == "__main__":
-    reader = RFIDReader()
-    reader.read_card()
+        return json.dumps(data)
 
