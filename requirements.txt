@@ -1,3 +1,0 @@
-wifi
-operator
-collections
