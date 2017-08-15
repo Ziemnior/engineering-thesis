@@ -1,7 +1,6 @@
 from time import sleep
 import RPi.GPIO as GPIO
 import MFRC522
-from signal import signal, SIGINT
 import json
 from sensor_id import get_sensor_id
 
@@ -18,7 +17,6 @@ class RFIDReader():
                 if not error:
                     (error, uid) = self.rfid_reader.MFRC522_Anticoll()
                     if not error:
-			#identifier = 
                         self.send_json(uid)
                         sleep(3)
             except:

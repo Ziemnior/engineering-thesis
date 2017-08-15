@@ -1,3 +1,7 @@
 wifi
 operator
 collections
+optparse
+time
+RPi.GPIO
+json
