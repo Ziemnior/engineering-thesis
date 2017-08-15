@@ -38,7 +38,7 @@ class NetworkConnection:
         interface = self.interface
         password = self.password
         networks = self.sort_appropriate_networks()
-        for network in networks:
+        for network in self.sort_appropriate_networks():
             try:
                 print("Trying to connect to {}").format(network.ssid)
                 scheme = Scheme.for_cell(interface, network.ssid, network, password)
