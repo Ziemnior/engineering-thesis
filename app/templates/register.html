@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% from "_formhelpers.html" import render_field %}
+
+{% block title %} Register{{ super() }} {% endblock %}
+
+{% block content %}
+
+<body>
+	<p> {{ error }} </p>
+	<div class="panel panel-default col-sm-4"> 
+		<div class="panel-heading row">Register</div>
+		<div class="panel-body row">
+			<form action="/register" method="POST" align="center">
+			{{ form.csrf_token }}
+			{{ render_field(form.email) }}
+			{{ render_field(form.password) }}
+			{{ render_field(form.confirm_password) }}
+			{{ render_field(form.user_id) }}
+			</div>	
+			<div class="panel-footer row"><input type="submit" value="Register"></div>
+			</form>
+	</div>
+{% endblock %}

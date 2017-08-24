@@ -1,3 +1,4 @@
+from flask_login import UserMixin
 from sqlalchemy import Column, DateTime, String, Integer, ForeignKey
 from sqlalchemy.orm import relationship
 from database import Base
@@ -35,3 +36,13 @@ class Place(Base):
     def __repr__(self):
         return "<Place(id='%s', name='%s')>" % (self.id, self.name)
 
+
+class User(Base, UserMixin):
+    __tablename__ = 'users'
+    id = Column(Integer, primary_key=True)
+    email = Column(String)
+    password = Column(String)
+    card_id = Column(String)
+
+    def __repr__(self):
+        return "<User(email={})>".format(self.email)

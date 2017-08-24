@@ -2,3 +2,6 @@ sqlalchemy
 psycopg2
 flask
 flask_bootstrap
+flask_wtf
+flask_login
+wtforms
