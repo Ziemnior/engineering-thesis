@@ -40,7 +40,7 @@ class Place(Base):
 class User(Base, UserMixin):
     __tablename__ = 'users'
     id = Column(Integer, primary_key=True)
-    email = Column(String)
+    email = Column(String, unique=True)
     password = Column(String)
     card_id = Column(String)
 

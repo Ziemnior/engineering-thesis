@@ -19,6 +19,7 @@ class RegisterForm(FlaskForm):
     confirm_password = PasswordField("Confirm password")
     user_id = StringField("Placeholder")
 
-class AddPlaceForm(FlaskForm):
-    place_name = StringField("Place Name")
-    place_desc = TextAreaField("Place Description")
+
+class AddSensorForm(FlaskForm):
+    sensor_place = StringField("Sensor place", validators=[InputRequired()])
+    sensor_id = StringField("Sensor ID", validators=[InputRequired()])

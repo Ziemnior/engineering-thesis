@@ -1,14 +1,15 @@
-from flask import Flask, Response, request, render_template, flash, redirect
-from database import create_session, init_db
+from flask import Flask, Response, request, render_template, flash, redirect, url_for
+from database import init_db, create_session
 from datetime import datetime
 from flask_bootstrap import Bootstrap
 from flask_login import LoginManager, login_required, login_user, logout_user
 from werkzeug.security import check_password_hash, generate_password_hash
 from models import Record, Sensor, Place, User
-from utils.forms import AddPlaceForm, LoginForm, RegisterForm
+from utils.forms import AddSensorForm, LoginForm, RegisterForm
 import json
 import requests
- 
+
+
 app = Flask(__name__)
 Bootstrap(app)
 init_db()
@@ -35,11 +36,16 @@ def process_record_post():
         session.add(record)
     return Response(status=201)
 
+def flash_errors(form):
+    for field, errors in form.errors.items():
+        for error in errors:
+            flash(u"Error in the %s field - %s" % (getattr(form, field).label.text, error))
+
 
 @app.route("/")
 def home():
+    records = dict()
     with create_session() as session:
-        records = dict()
         for place in session.query(Place).order_by(Place.name.asc()).all():
             record = (session.query(Record).
                     join(Sensor).
@@ -55,12 +61,12 @@ def login():
     if form.validate_on_submit():
         with create_session() as session:
             user = session.query(User).filter_by(email=form.email.data).first()
-        if user and check_password_hash(user.password, form.password.data):
-            login_user(user)
-            flash("You're now logged in", "success")
-            return redirect(url_for('home'))
-        else:
-            flash("Invalid email or password", "error")
+            if user and check_password_hash(user.password, form.password.data):
+                login_user(user)
+                flash("You're now logged in", "success")
+                return redirect(url_for('home'))
+            else:
+                flash("Invalid email or password", "error")
     return render_template("login.html", form=form)
 
 
@@ -69,10 +75,14 @@ def register():
     form = RegisterForm()
     if form.validate_on_submit():
         with create_session() as session:
-            hashed_password = generate_password_hash(form.password.data)
-            user = User(email=form.email.data, password=hashed_password)
-            session.add(user)
-            flash("You can now log in", "success")
+            email = session.query(User).filter_by(email=form.email.data).one_or_none()
+            if email is None:
+                hashed_password = generate_password_hash(form.password.data)
+                user = User(email=form.email.data, password=hashed_password)
+                session.add(user)
+                flash("You can now log in", "success")
+            else:
+                flash("Email already exists in database", "error")
     return render_template('register.html', form=form)
 
 
@@ -84,23 +94,20 @@ def logout():
     return redirect("/")
 
 
-@app.route("/addplace", methods=['GET', 'POST'])
-def addplace():
-    form = AddPlaceForm()
-    return render_template("addplace.html", form=form)
-
-
 @app.route("/addsensor", methods=['GET', 'POST'])
-@login_required
 def addsensor():
-    return render_template("addsensor.html")
+    form = AddSensorForm()
+    if form.validate_on_submit():
+        with create_session() as session:
+            place = Place(name=form.sensor_place.data)
+            sensor = Sensor(place_id=form.sensor_id.data)
+            session.add(place)
+            session.add(sensor)
+    else:
+        flash("Please costam all fields", "warning")
+    return render_template("addsensor.html", form=form)
 
 
 if __name__ == "__main__":
-    with create_session() as session:
-        gate = Place(name="Gate")
-        sensor1 = Sensor(place_id=1)
-        session.add(gate)
-        session.add(sensor1)
     app.run()
 
