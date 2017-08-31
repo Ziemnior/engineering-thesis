@@ -4,11 +4,10 @@ from datetime import datetime
 from flask_bootstrap import Bootstrap
 from flask_login import LoginManager, login_required, login_user, logout_user
 from werkzeug.security import check_password_hash, generate_password_hash
-from models import Record, Sensor, Place, User
+from models import Record, Record_unreg, Sensor, Place, User
 from utils.forms import AddSensorForm, LoginForm, RegisterForm
 import json
 import requests
-
 
 app = Flask(__name__)
 Bootstrap(app)
@@ -19,22 +18,30 @@ login_manager.init_app(app)
 
 app.config['SECRET_KEY'] = 'secretkey'
 app.config['TEMPLATES_AUTO_RELOAD'] = True
- 
+
 
 @login_manager.user_loader
 def load_user(user_id):
     with create_session() as session:
         return session.query(User).get(user_id)
 
+
 @app.route("/api/post-record", methods=["POST"])
 def process_record_post():
     data = json.loads(request.data)
     with create_session() as session:
-        record = Record(sensor_id=data["sensor_id"],
-                        user_id=data["user_id"],
-                        timestamp=datetime.now())
-        session.add(record)
+        if session.query(Sensor).filter_by(place_id=data["sensor_id"]).first():
+            record = Record(sensor_id=data["sensor_id"],
+                            user_id=data["user_id"],
+                            timestamp=datetime.now())
+            session.add(record)
+        else:
+            record = Record_unreg(sensor_id=data["sensor_id"],
+                                  user_id=data["user_id"],
+                                  timestamp=datetime.now())
+            session.add(record)
     return Response(status=201)
+
 
 def flash_errors(form):
     for field, errors in form.errors.items():
@@ -48,8 +55,8 @@ def home():
     with create_session() as session:
         for place in session.query(Place).order_by(Place.name.asc()).all():
             record = (session.query(Record).
-                    join(Sensor).
-                    filter(Sensor.place_id == place.id))
+                      join(Sensor).
+                      filter(Sensor.place_id == place.id))
             if record:
                 records[place.id] = record
     return render_template('index.html', records=records)
@@ -104,10 +111,9 @@ def addsensor():
             session.add(place)
             session.add(sensor)
     else:
-        flash("Please costam all fields", "warning")
+        flash("Please fill out all fields", "warning")
     return render_template("addsensor.html", form=form)
 
 
 if __name__ == "__main__":
     app.run()
-

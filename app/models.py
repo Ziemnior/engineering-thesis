@@ -16,6 +16,17 @@ class Record(Base):
         return "<Record(type='%s', value='%s', date='%s')>" % (self.data_type, self.value, self.date)
 
 
+class Record_unreg(Base):
+    __tablename__ = 'records_unreg'
+    id = Column(Integer, primary_key=True)
+    sensor_id = Column(String)
+    user_id = Column(String)
+    timestamp = Column(DateTime)
+
+    def __repr__(self):
+        return "<Record(type='%s', value='%s', date='%s')>" % (self.data_type, self.value, self.date)
+
+
 class Sensor(Base):
     __tablename__ = 'sensors'
     id = Column(Integer, primary_key=True)
