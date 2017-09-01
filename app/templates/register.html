@@ -1,5 +1,4 @@
 {% from "_formhelpers.html" import render_field %}
-{% from "_header.html" import render_header %}
 {% extends "base.html" %}
 
 {% block title %}Register{{ super() }}{% endblock %}
@@ -7,29 +6,30 @@
 {% block content %}
 
 <div class="container">
-  <br />
-  <br />
-  {{ render_header([(1, 4), (2, 4), (3, 4)], 2, "Register") }}
+    <br/>
+    <br/>
 
-  <div class="row">
-    <div class="col-sm-4"></div>
-    <div class="col-sm-4">
-      <form action="/register" method="post" align="center">
-        {{ form.csrf_token }}
-        {{ render_field(form.email) }}
-        {{ render_field(form.password) }}
-        {{ render_field(form.confirm_password) }}
-	{{ render_field(form.user_id) }}
-        <div  align="right">
-          <input class="btn btn-default" type="submit" value="Register">
+    <div class="row">
+        <div class="col-sm-4"></div>
+        <div class="col-sm-4">
+            <form action="/register" method="post" align="center">
+                {{ form.csrf_token }}
+                {{ render_field(form.email) }}
+                {{ render_field(form.name) }}
+                {{ render_field(form.surname) }}
+                {{ render_field(form.password) }}
+                {{ render_field(form.confirm_password) }}
+                {{ render_field(form.user_id) }}
+                <div align="right">
+                    <input class="btn btn-default" type="submit" value="Register">
+                </div>
+            </form>
+            <p>{{error}}</p>
         </div>
-      </form>
-      <p>{{error}}</p>
+        <div class="col-sm-4"></div>
+        <div class="col-sm-4">
+        </div>
     </div>
-    <div class="col-sm-4"></div>
-    <div class="col-sm-4">
-    </div>
-  </div>
 </div>
 
 {% endblock %}

@@ -4,7 +4,7 @@ from datetime import datetime
 from flask_bootstrap import Bootstrap
 from flask_login import LoginManager, login_required, login_user, logout_user
 from werkzeug.security import check_password_hash, generate_password_hash
-from models import Record, Record_unreg, Sensor, Place, User
+from models import Record, RecordUnregistered, Sensor, Place, User
 from utils.forms import AddSensorForm, LoginForm, RegisterForm
 import json
 import requests
@@ -36,17 +36,11 @@ def process_record_post():
                             timestamp=datetime.now())
             session.add(record)
         else:
-            record = Record_unreg(sensor_id=data["sensor_id"],
-                                  user_id=data["user_id"],
-                                  timestamp=datetime.now())
+            record = RecordUnregistered(sensor_id=data["sensor_id"],
+                                        user_id=data["user_id"],
+                                        timestamp=datetime.now())
             session.add(record)
     return Response(status=201)
-
-
-def flash_errors(form):
-    for field, errors in form.errors.items():
-        for error in errors:
-            flash(u"Error in the %s field - %s" % (getattr(form, field).label.text, error))
 
 
 @app.route("/")
@@ -85,9 +79,12 @@ def register():
             email = session.query(User).filter_by(email=form.email.data).one_or_none()
             if email is None:
                 hashed_password = generate_password_hash(form.password.data)
-                user = User(email=form.email.data, password=hashed_password)
+                user = User(email=form.email.data, name=form.name.data, surname=form.surname.data,
+                            password=hashed_password, card_id=form.user_id.data.user_id)
                 session.add(user)
+                session.query(RecordUnregistered).filter_by(user_id=form.user_id.data.user_id).delete()
                 flash("You can now log in", "success")
+                return redirect(url_for('home'))
             else:
                 flash("Email already exists in database", "error")
     return render_template('register.html', form=form)

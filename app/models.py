@@ -13,18 +13,18 @@ class Record(Base):
     timestamp = Column(DateTime)
 
     def __repr__(self):
-        return "<Record(type='%s', value='%s', date='%s')>" % (self.data_type, self.value, self.date)
+        return "<Record(sensor_id='%s', user_id='%s')>" % (self.sensor_id, self.user_id)
 
 
-class Record_unreg(Base):
-    __tablename__ = 'records_unreg'
+class RecordUnregistered(Base):
+    __tablename__ = 'records_unregistered'
     id = Column(Integer, primary_key=True)
     sensor_id = Column(String)
     user_id = Column(String)
     timestamp = Column(DateTime)
 
     def __repr__(self):
-        return "<Record(type='%s', value='%s', date='%s')>" % (self.data_type, self.value, self.date)
+        return "<Record(sensor_id='%s', user_id='%s')>" % (self.sensor_id, self.user_id)
 
 
 class Sensor(Base):
@@ -35,7 +35,7 @@ class Sensor(Base):
     records = relationship("Record", order_by=Record.id, back_populates="sensor")
 
     def __repr__(self):
-        return "<Sensor(id='%s', at='%s')>" % (self.id, self.place)
+        return "<Sensor(id='%s', at='%s')>" % (self.id, self.place_id)
 
 
 class Place(Base):
@@ -52,8 +52,10 @@ class User(Base, UserMixin):
     __tablename__ = 'users'
     id = Column(Integer, primary_key=True)
     email = Column(String, unique=True)
+    name = Column(String)
+    surname = Column(String)
     password = Column(String)
-    card_id = Column(String)
+    card_id = Column(String, unique=True)
 
     def __repr__(self):
-        return "<User(email={})>".format(self.email)
+        return "<User(email=%s, card_id=%s)>" % (self.email, self.card_id)
