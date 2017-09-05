@@ -6,6 +6,7 @@ from flask_login import LoginManager, login_required, login_user, logout_user
 from werkzeug.security import check_password_hash, generate_password_hash
 from models import Record, RecordUnregistered, Sensor, Place, User
 from utils.forms import AddSensorForm, LoginForm, RegisterForm
+from utils.roles import requires_roles
 import json
 import requests
 
@@ -72,6 +73,7 @@ def login():
 
 
 @app.route("/register", methods=["GET", "POST"])
+@requires_roles('admin')
 def register():
     form = RegisterForm()
     if form.validate_on_submit():
@@ -80,7 +82,7 @@ def register():
             if email is None:
                 hashed_password = generate_password_hash(form.password.data)
                 user = User(email=form.email.data, name=form.name.data, surname=form.surname.data,
-                            password=hashed_password, card_id=form.user_id.data.user_id)
+                            password=hashed_password, card_id=form.user_id.data.user_id, role=form.role.data)
                 session.add(user)
                 session.query(RecordUnregistered).filter_by(user_id=form.user_id.data.user_id).delete()
                 flash("You can now log in", "success")
@@ -99,6 +101,7 @@ def logout():
 
 
 @app.route("/addsensor", methods=['GET', 'POST'])
+@requires_roles('admin')
 def addsensor():
     form = AddSensorForm()
     if form.validate_on_submit():
@@ -109,7 +112,13 @@ def addsensor():
             session.add(sensor)
     else:
         flash("Please fill out all fields", "warning")
-    return render_template("addsensor.html", form=form)
+        records = dict()
+        with create_session() as session:
+            for place in session.query(Place).order_by(Place.name.asc()).all():
+                record = session.query(Place).join(Sensor).filter(Sensor.place_id == place.id)
+                if record:
+                    records[place.id] = record
+    return render_template("addsensor.html", form=form, records=records)
 
 
 if __name__ == "__main__":
