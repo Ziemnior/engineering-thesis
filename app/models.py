@@ -13,7 +13,7 @@ class Record(Base):
     timestamp = Column(DateTime)
 
     def __repr__(self):
-        return "<Record(sensor_id='%s', user_id='%s')>" % (self.sensor_id, self.user_id)
+        return "<Record(sensor_id={}, user_id={})>".format(self.sensor_id, self.user_id)
 
 
 class RecordUnregistered(Base):
@@ -24,28 +24,28 @@ class RecordUnregistered(Base):
     timestamp = Column(DateTime)
 
     def __repr__(self):
-        return "<Record(sensor_id='%s', user_id='%s')>" % (self.sensor_id, self.user_id)
+        return "<Record(sensor_id={}, user_id={})>".format(self.sensor_id, self.user_id)
 
 
 class Sensor(Base):
     __tablename__ = 'sensors'
     id = Column(Integer, primary_key=True)
     place_id = Column(Integer, ForeignKey('places.id'))
-    place = relationship("Place", back_populates="places")
+    place = relationship("Place", back_populates="sensor")
     records = relationship("Record", order_by=Record.id, back_populates="sensor")
 
     def __repr__(self):
-        return "<Sensor(id='%s', at='%s')>" % (self.id, self.place_id)
+        return "<Sensor(id={}, place_id={})>".format(self.id, self.place_id)
 
 
 class Place(Base):
     __tablename__ = 'places'
     id = Column(Integer, primary_key=True)
     name = Column(String)
-    places = relationship("Sensor", order_by=Record.id, back_populates="place")
+    sensor = relationship("Sensor", order_by=Sensor.id, back_populates="place")
 
     def __repr__(self):
-        return "<Place(id='%s', name='%s')>" % (self.id, self.name)
+        return "<Place(id={}, name={}>".format(self.id, self.name)
 
 
 class User(Base, UserMixin):
@@ -55,7 +55,8 @@ class User(Base, UserMixin):
     name = Column(String)
     surname = Column(String)
     password = Column(String)
+    role = Column(String)
     card_id = Column(String, unique=True)
 
     def __repr__(self):
-        return "<User(email=%s, card_id=%s)>" % (self.email, self.card_id)
+        return "<User(email={}, role={}, card_id={})>".format(self.email, self.role, self.card_id)
