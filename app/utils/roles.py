@@ -20,9 +20,9 @@ def get_current_user_role():
     with create_session() as session:
         try:
             get_role = session.query(User.role).filter_by(email=current_user.email).first()
+            return "".join(get_role)
         except AttributeError:
             return None
-    return "".join(get_role)
 
 
 def error_response():
