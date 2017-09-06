@@ -22,4 +22,3 @@ def create_session(engine=engine):
 def init_db():
     import models
     models.Base.metadata.create_all(bind=engine)
-

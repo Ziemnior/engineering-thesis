@@ -73,13 +73,14 @@ def login():
 
 
 @app.route("/register", methods=["GET", "POST"])
-@requires_roles('admin')
+# @requires_roles('admin') temporary disabled
 def register():
     form = RegisterForm()
     if form.validate_on_submit():
         with create_session() as session:
             email = session.query(User).filter_by(email=form.email.data).one_or_none()
-            if email is None:
+            user_id = session.query(User).filter_by(card_id=form.user_id.data.user_id).one_or_none()
+            if email is None and user_id is None:
                 hashed_password = generate_password_hash(form.password.data)
                 user = User(email=form.email.data, name=form.name.data, surname=form.surname.data,
                             password=hashed_password, card_id=form.user_id.data.user_id, role=form.role.data)
@@ -88,7 +89,7 @@ def register():
                 flash("You can now log in", "success")
                 return redirect(url_for('home'))
             else:
-                flash("Email already exists in database", "error")
+                flash("Email or card already registered in the database", "error")
     return render_template('register.html', form=form)
 
 
@@ -112,12 +113,12 @@ def addsensor():
             session.add(sensor)
     else:
         flash("Please fill out all fields", "warning")
-        records = dict()
-        with create_session() as session:
-            for place in session.query(Place).order_by(Place.name.asc()).all():
-                record = session.query(Place).join(Sensor).filter(Sensor.place_id == place.id)
-                if record:
-                    records[place.id] = record
+    records = dict()
+    with create_session() as session:
+        for place in session.query(Place).order_by(Place.name.asc()).all():
+            record = session.query(Place).join(Sensor).filter(Sensor.place_id == place.id)
+            if record:
+                records[place.id] = record
     return render_template("addsensor.html", form=form, records=records)
 
 
