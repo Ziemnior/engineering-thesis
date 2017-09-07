@@ -7,6 +7,8 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from models import Record, RecordUnregistered, Sensor, Place, User
 from utils.forms import AddSensorForm, LoginForm, RegisterForm
 from utils.roles import requires_roles
+from utils.create_admin import create_admin_account
+from utils.registration import check_existing_uids
 import json
 import requests
 
@@ -76,6 +78,7 @@ def login():
 # @requires_roles('admin') temporary disabled
 def register():
     form = RegisterForm()
+    check_existing_uids()
     if form.validate_on_submit():
         with create_session() as session:
             email = session.query(User).filter_by(email=form.email.data).one_or_none()
@@ -101,7 +104,7 @@ def logout():
     return redirect("/")
 
 
-@app.route("/addsensor", methods=['GET', 'POST'])
+@app.route("/addsensor", methods=["GET", "POST"])
 @requires_roles('admin')
 def addsensor():
     form = AddSensorForm()
@@ -123,4 +126,5 @@ def addsensor():
 
 
 if __name__ == "__main__":
+    create_admin_account()
     app.run()
