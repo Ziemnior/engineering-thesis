@@ -2,7 +2,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SelectField, TextAreaField, RadioField
 from wtforms.validators import InputRequired, Email, Length, EqualTo
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
-from models import User, RecordUnregistered
+from models import RecordUnregistered
 from database import create_session
 
 
