@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SelectField, TextAreaField, RadioField
+from wtforms import StringField, PasswordField, RadioField, IntegerField
 from wtforms.validators import InputRequired, Email, Length, EqualTo
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
 from models import RecordUnregistered
@@ -34,5 +34,5 @@ class RegisterForm(FlaskForm):
 
 
 class AddSensorForm(FlaskForm):
-    sensor_place = StringField("Sensor place", validators=[InputRequired()])
-    sensor_id = StringField("Sensor ID", validators=[InputRequired()])
+    sensor_place = StringField('Sensor place', validators=[InputRequired()])
+    sensor_id = StringField('Sensor ID', validators=[InputRequired()])
