@@ -114,8 +114,6 @@ def addsensor():
             sensor = Sensor(place_id=form.sensor_id.data)
             session.add(place)
             session.add(sensor)
-    else:
-        flash("Please fill out all fields", "warning")
     records = dict()
     with create_session() as session:
         for place in session.query(Place).order_by(Place.name.asc()).all():
