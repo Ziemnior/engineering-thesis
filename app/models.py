@@ -24,7 +24,7 @@ class RecordUnregistered(Base):
     timestamp = Column(DateTime)
 
     def __repr__(self):
-        return "<Record(sensor_id={}, user_id={})>".format(self.sensor_id, self.user_id)
+        return "{} [{}]".format(self.user_id, self.timestamp.__format__('%Y-%m-%d %H:%M:%S'))
 
 
 class Sensor(Base):
