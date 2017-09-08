@@ -29,7 +29,7 @@ class RegisterForm(FlaskForm):
     confirm_password = PasswordField("Confirm password")
     role = RadioField("Check role:", choices=[('user', "Regular user"), ('admin', "Admin")],
                       validators=[InputRequired()])
-    user_id = QuerySelectField('Select user card', query_factory=get_unregistered_id, get_label='user_id',
+    user_id = QuerySelectField('Select user card', query_factory=get_unregistered_id,
                                validators=[InputRequired()])
 
 
