@@ -13,6 +13,7 @@ Session = sessionmaker(bind=engine)
 @contextmanager
 def create_session(engine=engine):
     session = Session(bind=engine)
+    session.expire_on_commit = False
     try:
         yield session
     finally:
