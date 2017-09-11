@@ -1,0 +1,31 @@
+{% from "_formhelpers.html" import render_field %}
+{% extends "base.html" %}
+
+{% block title %}User profile{{ super() }}{% endblock %}
+
+{% block content %}
+
+
+{% if users != [] %}
+<table class="table" style="width: auto ;  margin: 0px auto">
+    {% for profile in users %}
+    <tr>
+        <th>First name and last name</th>
+        <th>{{ profile.name }} {{ profile.surname }}</th>
+    </tr>
+    <tr>
+        <td>User ID</td>
+        <td> {{ profile.card_id }}</td>
+    </tr>
+    <tr>
+        <td>Role</td>
+        <td>{{ profile.role }}</td>
+    </tr>
+</table>
+{% endfor %}
+{% else %}
+No users to display.
+{% endif %}
+
+{% endblock %}
+

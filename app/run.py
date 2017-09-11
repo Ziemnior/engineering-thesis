@@ -123,6 +123,25 @@ def addsensor():
     return render_template("addsensor.html", form=form, records=records)
 
 
+
+@app.route('/user')
+@requires_roles('admin')
+def user():
+    with create_session() as session:
+        users = session.query(User).all()
+    return render_template("user.html", users=users)
+
+
+@app.route('/user-profile/<id>')
+@requires_roles('admin')
+def user_profile(id):
+    with create_session() as session:
+        users = session.query(User).filter(User.id == id).all()
+    return render_template("user-profile.html", users=users)
+
+
 if __name__ == "__main__":
+    init_db()
+
     create_admin_account()
     app.run()
