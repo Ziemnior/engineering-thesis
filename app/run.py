@@ -5,16 +5,16 @@ from flask_bootstrap import Bootstrap
 from flask_login import LoginManager, login_required, login_user, logout_user
 from werkzeug.security import check_password_hash, generate_password_hash
 from models import Record, RecordUnregistered, Sensor, Place, User
-from utils.forms import AddSensorForm, LoginForm, RegisterForm
+from utils.forms import AddSensorForm, LoginForm, RegisterForm, EditForm
 from utils.roles import requires_roles
 from utils.create_admin import create_admin_account
 from utils.registration import check_existing_uids
 import json
 import requests
+from sqlalchemy import func
 
 app = Flask(__name__)
 Bootstrap(app)
-init_db()
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -136,8 +136,21 @@ def user():
 @requires_roles('admin')
 def user_profile(id):
     with create_session() as session:
-        users = session.query(User).filter(User.id == id).all()
-    return render_template("user-profile.html", users=users)
+        user = session.query(User).filter(User.id == id).first()
+    return render_template("user-profile.html", user=user)
+
+
+@app.route('/user-profile/<id>/edit', methods=["GET", "POST"])
+def edit_profile(id):
+    with create_session() as session:
+        user = session.query(User).filter(User.id == id).first()
+        form = EditForm(obj=user)
+        form.email.render_kw={'readonly': True}
+        if form.validate_on_submit():
+            form.populate_obj(user)
+            session.commit()
+            flash("Profile updated successfully", "success")
+    return render_template("edit.html", id=id, form=form, user=user)
 
 
 if __name__ == "__main__":

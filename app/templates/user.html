@@ -10,15 +10,14 @@
     <tr>
         <th>First and last name</th>
         <th>User ID</th>
-        <th>Role</th>
     </tr>
     {% for user in users %}
     <tr>
-        <td><a href="/user-profile/{{ user.id  }}">{{ user.name }} {{ user.surname }}</td>
+        <td><a href="/user-profile/{{ user.id  }}" {% if user.role== 'admin' %} class="text-danger" {%
+            endif %}>{{ user.name }} {{ user.surname }}
+        </td>
         </a>
         <td> {{ user.card_id }}</td>
-        <td> {% if user.role == 'admin' %} Admin {% endif %}</td>
-
     </tr>
     {% endfor %}
 </table>
