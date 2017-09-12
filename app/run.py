@@ -150,6 +150,7 @@ def edit_profile(id):
             form.populate_obj(user)
             session.commit()
             flash("Profile updated successfully", "success")
+            return redirect(url_for('user_profile', id=id))
     return render_template("edit.html", id=id, form=form, user=user)
 
 
