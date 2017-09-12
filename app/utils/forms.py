@@ -33,6 +33,17 @@ class RegisterForm(FlaskForm):
                                validators=[InputRequired()])
 
 
+class EditForm(FlaskForm):
+    email = StringField('Email Address')
+    name = StringField('Name')
+    surname = StringField('Surname')
+    password = PasswordField('Password',
+                             validators=[EqualTo('confirm_password', message="Passwords don't match")])
+    confirm_password = PasswordField("Confirm password")
+    role = RadioField("Check role:", choices=[('user', "Regular user"), ('admin', "Admin")])
+    user_id = QuerySelectField('Select user card', query_factory=get_unregistered_id)
+
+
 class AddSensorForm(FlaskForm):
     sensor_place = StringField('Sensor place', validators=[InputRequired()])
     sensor_id = StringField('Sensor ID', validators=[InputRequired()])
