@@ -11,6 +11,7 @@ from utils.create_admin import create_admin_account
 from utils.registration import check_existing_uids
 import json
 import requests
+from sqlalchemy import func
 
 app = Flask(__name__)
 Bootstrap(app)
@@ -122,6 +123,19 @@ def addsensor():
                 records[place.id] = record
     return render_template("addsensor.html", form=form, records=records)
 
+
+@app.route("/onsite")
+@requires_roles('admin')
+def onsite():
+    working_people = []
+    with create_session() as session:
+        number_of_entries = session.query(Record.user_id, func.count(Record.user_id)).group_by(Record.user_id).all()
+        print("**************")
+        for human in number_of_entries:
+            if not human[1] % 2 == 0:
+                working_people.append(human)
+        print(working_people)
+    return render_template("onsite.html", people=working_people)
 
 if __name__ == "__main__":
     create_admin_account()
