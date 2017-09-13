@@ -4,36 +4,6 @@
 
 {% block content %}
 
-{% for key, place in records.items() %}
-
-{% if records[place_id] != {} %}
-
-<table class="table">
-	<tr>
-		<th>Sensor id</th>
-		<th>User id</th>
-		<th>Timestamp</th>
-
-	</tr>
-
-	{% for elem in place %}
-
-	<tr>
-		<td> {{ elem.sensor_id }} </td>
-		<td> {{ elem.user_id }} </td>
-		<td> {{ elem.timestamp.strftime('%Y-%m-%d %H:%M:%S') }} </td>
-	</tr>
-
-	{% endfor %}
-
-</table>
-
-{% else %}
-
-	No records yet.
-
-{% endif %}
-
 <li><a href="/user">Users</a></li>
 
 {% endblock %}

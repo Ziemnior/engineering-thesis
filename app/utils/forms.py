@@ -2,13 +2,13 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, RadioField, IntegerField
 from wtforms.validators import InputRequired, Email, Length, EqualTo
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
-from models import RecordUnregistered
 from database import create_session
+from models import Record
 
 
 def get_unregistered_id():
     with create_session() as session:
-        return session.query(RecordUnregistered)
+        return session.query(Record).filter_by(is_registered=False)
 
 
 class LoginForm(FlaskForm):
@@ -47,3 +47,9 @@ class EditForm(FlaskForm):
 class AddSensorForm(FlaskForm):
     sensor_place = StringField('Sensor place', validators=[InputRequired()])
     sensor_id = StringField('Sensor ID', validators=[InputRequired()])
+
+
+class FilterSensorForm(FlaskForm):
+    choose_input = RadioField("Select filter:", choices=[('sensor', "Sensor"), ('place', "Place")], )
+    sensor_name = StringField('Sensor name')
+    place_name = StringField('Place name')

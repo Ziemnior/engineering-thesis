@@ -4,11 +4,11 @@ from datetime import datetime
 from flask_bootstrap import Bootstrap
 from flask_login import LoginManager, login_required, login_user, logout_user
 from werkzeug.security import check_password_hash, generate_password_hash
-from models import Record, RecordUnregistered, Sensor, Place, User
+from models import Record, Sensor, User
 from utils.forms import AddSensorForm, LoginForm, RegisterForm, EditForm
 from utils.roles import requires_roles
 from utils.create_admin import create_admin_account
-from utils.registration import check_existing_uids
+from utils.registration import check_existing_uids, check_if_user_exists, if_sensor_registered
 import json
 import requests
 from sqlalchemy import func
@@ -33,30 +33,17 @@ def load_user(user_id):
 def process_record_post():
     data = json.loads(request.data)
     with create_session() as session:
-        if session.query(Sensor).filter_by(place_id=data["sensor_id"]).first():
-            record = Record(sensor_id=data["sensor_id"],
-                            user_id=data["user_id"],
-                            timestamp=datetime.now())
-            session.add(record)
-        else:
-            record = RecordUnregistered(sensor_id=data["sensor_id"],
-                                        user_id=data["user_id"],
-                                        timestamp=datetime.now())
-            session.add(record)
+        record = Record(sensor_id=data["sensor_id"],
+                        user_id=data["user_id"],
+                        is_registered=if_sensor_registered(data),
+                        timestamp=datetime.now())
+        session.add(record)
     return Response(status=201)
 
 
 @app.route("/")
 def home():
-    records = dict()
-    with create_session() as session:
-        for place in session.query(Place).order_by(Place.name.asc()).all():
-            record = (session.query(Record).
-                      join(Sensor).
-                      filter(Sensor.place_id == place.id))
-            if record:
-                records[place.id] = record
-    return render_template('index.html', records=records)
+    return render_template('index.html')
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -75,20 +62,19 @@ def login():
 
 
 @app.route("/register", methods=["GET", "POST"])
-# @requires_roles('admin') temporary disabled
+@requires_roles('admin')
 def register():
     form = RegisterForm()
     check_existing_uids()
     if form.validate_on_submit():
         with create_session() as session:
-            email = session.query(User).filter_by(email=form.email.data).one_or_none()
-            user_id = session.query(User).filter_by(card_id=form.user_id.data.user_id).one_or_none()
-            if email is None and user_id is None:
+            if not check_if_user_exists(form):
                 hashed_password = generate_password_hash(form.password.data)
                 user = User(email=form.email.data, name=form.name.data, surname=form.surname.data,
                             password=hashed_password, card_id=form.user_id.data.user_id, role=form.role.data)
                 session.add(user)
-                session.query(RecordUnregistered).filter_by(user_id=form.user_id.data.user_id).delete()
+                session.query(Record).filter_by(user_id=form.user_id.data.user_id).update({Record.is_registered: True})
+                session.commit()
                 flash("You can now log in", "success")
                 return redirect(url_for('home'))
             else:
@@ -110,18 +96,23 @@ def addsensor():
     form = AddSensorForm()
     if form.validate_on_submit():
         with create_session() as session:
-            place = Place(name=form.sensor_place.data)
-            sensor = Sensor(place_id=form.sensor_id.data)
-            session.add(place)
+            sensor = Sensor(place_id=form.sensor_place.data, sensor_id=form.sensor_id.data)
             session.add(sensor)
-    records = dict()
-    with create_session() as session:
-        for place in session.query(Place).order_by(Place.name.asc()).all():
-            record = session.query(Place).join(Sensor).filter(Sensor.place_id == place.id)
-            if record:
-                records[place.id] = record
-    return render_template("addsensor.html", form=form, records=records)
+            flash("Sensor added successfully", "success")
+        return redirect(url_for('addsensor'))
 
+    sensors = dict()
+    with create_session() as session:
+        for sensor in session.query(Sensor).order_by(Sensor.place_id.asc()).all():
+            if sensor:
+                sensors[sensor.id] = sensor
+    return render_template("addsensor.html", form=form, sensors=sensors)
+
+
+@app.route("/onsite")
+@requires_roles('admin')
+def onsite():
+    return render_template("onsite.html", people=people)
 
 
 @app.route('/user')
@@ -145,7 +136,7 @@ def edit_profile(id):
     with create_session() as session:
         user = session.query(User).filter(User.id == id).first()
         form = EditForm(obj=user)
-        form.email.render_kw={'readonly': True}
+        form.email.render_kw = {'readonly': True}
         if form.validate_on_submit():
             form.populate_obj(user)
             session.commit()
