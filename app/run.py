@@ -1,9 +1,13 @@
+import json
+import requests
+
 from flask import Flask, Response, request, render_template, flash, redirect, url_for
-from database import init_db, create_session
-from datetime import datetime
 from flask_bootstrap import Bootstrap
 from flask_login import LoginManager, login_required, login_user, logout_user
 from werkzeug.security import check_password_hash, generate_password_hash
+
+from database import init_db, create_session
+from datetime import datetime
 from models import Record, Sensor, User
 from utils.forms import AddSensorForm, LoginForm, RegisterForm, EditForm, FilterSensorForm
 from utils.roles import requires_roles
@@ -11,9 +15,7 @@ from utils.create_admin import create_admin_account
 from utils.register import check_existing_uids, check_if_user_exists, if_sensor_registered, update_record_status, \
     if_uid_registered, update_uid_status
 from utils.users import get_people_on_site
-from utils.sensors import check_if_sensor_exists, display_registered_sensors
-import json
-import requests
+from utils.sensors import check_if_sensor_exists, display_registered_sensors, filter_sensors
 
 app = Flask(__name__)
 Bootstrap(app)
@@ -116,11 +118,17 @@ def sensors():
     return render_template("sensor.html", sensors=display_registered_sensors(Sensor), filter_form=filter_form)
 
 
+@app.route("/sensor/filter",  methods=["GET", "POST"])
+@requires_roles('admin')
+def sensor_filter():
+    filter_form = FilterSensorForm()
+    return render_template("sensor.html", sensors=filter_sensors(filter_form, Sensor), filter_form=filter_form, flag=1)
+
+
 @app.route("/onsite")
 @requires_roles('admin')
 def onsite():
-    working_people = get_people_on_site(Record, User)
-    return render_template("onsite.html", people=working_people)
+    return render_template("onsite.html", people=get_people_on_site(Record, User))
 
 
 @app.route('/user')
