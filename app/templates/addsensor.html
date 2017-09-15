@@ -27,32 +27,4 @@
     </div>
 </div>
 
-<h4>Registered sensors</h4>
-
-{% if sensors !=[] %}
-
-<table class="table">
-	<tr>
-		<th>Place</th>
-		<th>Sensor ID</th>
-	</tr>
-
-	{% for key, sensor in sensors.items() %}
-
-	<tr>
-		<td> {{ sensor.place_id }} </td>
-		<td> {{ sensor.sensor_id }} </td>
-
-	</tr>
-
-	{% endfor %}
-
-</table>
-
-{% else %}
-
-	No registered sensors yet.
-
-{% endif %}
-
 {% endblock %}
