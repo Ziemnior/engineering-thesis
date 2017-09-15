@@ -23,15 +23,17 @@
                 <!-- Collect the nav links, forms, and other content for toggling -->
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                     <ul class="nav navbar-nav">
-                        <li><a href="/addsensor">Add sensor</a></li>
+                        <li><a href="/sensor">Sensors</a></li>
                         <li><a href="/register">Register new user</a></li>
-                        <li><a href="/onsite">People on site</a></li>
+                        <li><a href="/onsite">On site</a></li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
                         {% if current_user.is_anonymous %}
                         <li><a href="/login">Log in</a></li>
                         {% elif current_user.is_authenticated %}
-                        <li><p class="navbar-text navbar-left">Welcome, {{ current_user.name }} {{ current_user.surname
+                        <li><p class="navbar-text navbar-left"><a href="/user-profile/{{ current_user.id }}"
+                                                                  class="navbar-link">Welcome, {{
+                            current_user.name }} {{ current_user.surname
                             }}</a></p></li>
                         <li><a href="/logout">Log out</a></li>
                         {% endif %}

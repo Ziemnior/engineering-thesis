@@ -5,13 +5,15 @@ from flask_bootstrap import Bootstrap
 from flask_login import LoginManager, login_required, login_user, logout_user
 from werkzeug.security import check_password_hash, generate_password_hash
 from models import Record, Sensor, User
-from utils.forms import AddSensorForm, LoginForm, RegisterForm, EditForm
+from utils.forms import AddSensorForm, LoginForm, RegisterForm, EditForm, FilterSensorForm
 from utils.roles import requires_roles
 from utils.create_admin import create_admin_account
-from utils.registration import check_existing_uids, check_if_user_exists, if_sensor_registered
+from utils.register import check_existing_uids, check_if_user_exists, if_sensor_registered, update_record_status, \
+    if_uid_registered, update_uid_status
+from utils.users import get_people_on_site
+from utils.sensors import check_if_sensor_exists, display_registered_sensors
 import json
 import requests
-from sqlalchemy import func
 
 app = Flask(__name__)
 Bootstrap(app)
@@ -35,7 +37,8 @@ def process_record_post():
     with create_session() as session:
         record = Record(sensor_id=data["sensor_id"],
                         user_id=data["user_id"],
-                        is_registered=if_sensor_registered(data),
+                        is_registered=if_sensor_registered(data, session, Sensor),
+                        in_use=if_uid_registered(data, session, User),
                         timestamp=datetime.now())
         session.add(record)
     return Response(status=201)
@@ -65,16 +68,15 @@ def login():
 @requires_roles('admin')
 def register():
     form = RegisterForm()
-    check_existing_uids()
+    check_existing_uids(Record, flash)
     if form.validate_on_submit():
         with create_session() as session:
-            if not check_if_user_exists(form):
+            if not check_if_user_exists(form, session, User):
                 hashed_password = generate_password_hash(form.password.data)
                 user = User(email=form.email.data, name=form.name.data, surname=form.surname.data,
                             password=hashed_password, card_id=form.user_id.data.user_id, role=form.role.data)
                 session.add(user)
-                session.query(Record).filter_by(user_id=form.user_id.data.user_id).update({Record.is_registered: True})
-                session.commit()
+                update_uid_status(form, session, Record)
                 flash("You can now log in", "success")
                 return redirect(url_for('home'))
             else:
@@ -96,23 +98,29 @@ def addsensor():
     form = AddSensorForm()
     if form.validate_on_submit():
         with create_session() as session:
-            sensor = Sensor(place_id=form.sensor_place.data, sensor_id=form.sensor_id.data)
-            session.add(sensor)
-            flash("Sensor added successfully", "success")
-        return redirect(url_for('addsensor'))
+            if not check_if_sensor_exists(form, session, Sensor):
+                sensor = Sensor(place_id=form.sensor_place.data, sensor_id=form.sensor_id.data)
+                session.add(sensor)
+                update_record_status(form, session, Record)
+                flash("Sensor added successfully", "success")
+            else:
+                flash("Sensor already registered in databsae", "error")
+        return redirect(url_for('sensors'))
+    return render_template("addsensor.html", form=form)
 
-    sensors = dict()
-    with create_session() as session:
-        for sensor in session.query(Sensor).order_by(Sensor.place_id.asc()).all():
-            if sensor:
-                sensors[sensor.id] = sensor
-    return render_template("addsensor.html", form=form, sensors=sensors)
+
+@app.route("/sensor",  methods=["GET", "POST"])
+@requires_roles('admin')
+def sensors():
+    filter_form = FilterSensorForm()
+    return render_template("sensor.html", sensors=display_registered_sensors(Sensor), filter_form=filter_form)
 
 
 @app.route("/onsite")
 @requires_roles('admin')
 def onsite():
-    return render_template("onsite.html", people=people)
+    working_people = get_people_on_site(Record, User)
+    return render_template("onsite.html", people=working_people)
 
 
 @app.route('/user')

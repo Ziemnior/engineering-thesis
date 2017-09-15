@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% from "_formhelpers.html" import render_field %}
+
+{% block title %} Sensors{{ super() }} {% endblock %}
+
+{% block content %}
+
+
+<div class="container">
+    <br/>
+    <br/>
+    <div class="row">
+        <div class="col-sm-4"></div>
+        <div class="col-sm-4">
+            <form action="/sensor" method="post">
+                {{ render_field(filter_form.place_name) }}
+                {{ render_field(filter_form.sensor_name) }}
+                <div align="right">
+                    <input class="btn btn-default" type="submit" value="Apply filter">
+                </div>
+            </form>
+        </div>
+        <div class="col-sm-4"></div>
+        <div class="col-sm-4">
+        </div>
+    </div>
+</div>
+
+<a href="{{ url_for('addsensor') }}" class="btn btn-primary">Add sensor</a>
+
+<h4>Registered sensors</h4>
+
+{% if sensors !=[] %}
+
+<table class="table">
+	<tr>
+		<th>Place</th>
+		<th>Sensor ID</th>
+	</tr>
+
+	{% for key, sensor in sensors.items() %}
+
+	<tr>
+		<td> {{ sensor.place_id }} </td>
+		<td> {{ sensor.sensor_id }} </td>
+
+	</tr>
+
+	{% endfor %}
+
+</table>
+
+{% else %}
+
+	No registered sensors yet.
+
+{% endif %}
+
+{% endblock %}

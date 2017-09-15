@@ -12,6 +12,7 @@ class Record(Base):
     user_id = Column(String)
     timestamp = Column(DateTime)
     is_registered = Column(Boolean)
+    in_use = Column(Boolean)
 
     def __repr__(self):
         return "{} [{}]".format(self.user_id, self.timestamp.__format__('%Y-%m-%d %H:%M:%S'))
