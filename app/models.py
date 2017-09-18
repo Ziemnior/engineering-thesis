@@ -22,7 +22,7 @@ class Sensor(Base):
     __tablename__ = 'sensors'
     id = Column(Integer, primary_key=True)
     place_id = Column(String)
-    sensor_id = Column(String)
+    sensor_id = Column(String, unique=True)
     records = relationship("Record", order_by=Record.id, back_populates="sensor")
 
     def __repr__(self):

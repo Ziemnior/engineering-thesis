@@ -13,10 +13,7 @@
         <div class="col-sm-4"></div>
         <div class="col-sm-4">
             <form action="/sensor/filter" method="post">
-                {{ render_field(filter_form.filter_type, class="col-sm-10", style="list-style-type: none") }}
-                <br>
                 {{ render_field(filter_form.place_name) }}
-                {{ render_field(filter_form.sensor_name) }}
                 <div align="right">
                     {% if flag == 1 %}
                     <a href="{{ url_for('sensors') }}" class="btn btn-primary" align="left">Clear filter</a>
@@ -47,7 +44,7 @@
 
     <tr>
         <td> {{ sensor.place_id }}</td>
-        <td> {{ sensor.sensor_id }}</td>
+        <td><a href="/sensor/{{ sensor.sensor_id }}">{{ sensor.sensor_id }}</a></td>
 
     </tr>
 
