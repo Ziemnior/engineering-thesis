@@ -21,3 +21,13 @@ def get_user_profile(user, id):
 def get_users(user):
     with create_session() as session:
         return session.query(user).all()
+
+
+def get_user_records(record, user):
+    with create_session() as session:
+        return session.query(record).filter_by(user_id=user.card_id, is_registered=True).limit(10)
+
+
+def get_all_user_records(record, user):
+    with create_session() as session:
+        return session.query(record).filter_by(user_id=user.card_id, is_registered=True).all()
