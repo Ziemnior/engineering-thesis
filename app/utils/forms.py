@@ -20,17 +20,17 @@ class RegisterForm(FlaskForm):
     email = StringField('Email Address', validators=[
         InputRequired(), Email(message="Incorrect email")])
     name = StringField('Name', validators=[
-        InputRequired()])
+        InputRequired(message="Enter name")])
     surname = StringField('Surname', validators=[
-        InputRequired()])
+        InputRequired(message="Enter surname")])
     password = PasswordField('Password', validators=[
-        InputRequired(),
+        InputRequired(message="Enter password"),
         EqualTo('confirm_password', message="Passwords don't match")])
     confirm_password = PasswordField("Confirm password")
     role = RadioField("Check role:", choices=[('user', "Regular user"), ('admin', "Admin")],
-                      validators=[InputRequired()])
+                      validators=[InputRequired(message="Select role")])
     user_id = QuerySelectField('Select user card', query_factory=get_unregistered_id,
-                               validators=[InputRequired()])
+                               validators=[InputRequired(message="Select card ID to assign to user")])
 
 
 class EditForm(FlaskForm):
@@ -41,7 +41,7 @@ class EditForm(FlaskForm):
                              validators=[EqualTo('confirm_password', message="Passwords don't match")])
     confirm_password = PasswordField("Confirm password")
     role = RadioField("Check role:", choices=[('user', "Regular user"), ('admin', "Admin")])
-    user_id = QuerySelectField('Select user card', query_factory=get_unregistered_id)
+    user_id = QuerySelectField('Select user card', query_factory=get_unregistered_id, allow_blank=True)
 
 
 class AddSensorForm(FlaskForm):
@@ -50,6 +50,6 @@ class AddSensorForm(FlaskForm):
 
 
 class FilterSensorForm(FlaskForm):
-    filter_type = RadioField("Select filter:", choices=[('place', "Place"), ('sensor', "Sensor")])
+    filter_type = RadioField("Select filter:", choices=[('place_id', "Place"), ('sensor_id', "Sensor")])
     sensor_name = StringField('Sensor name')
     place_name = StringField('Place name')

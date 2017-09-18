@@ -11,3 +11,13 @@ def get_people_on_site(record, user_):
                 for user in session.query(user_).filter_by(card_id=human[0]).all():
                     working_people.append("{} {}".format(user.name, user.surname))
         return working_people
+
+
+def get_user_profile(user, id):
+    with create_session() as session:
+        return session.query(user).filter(user.id == id).first()
+
+
+def get_users(user):
+    with create_session() as session:
+        return session.query(user).all()
