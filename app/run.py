@@ -14,7 +14,7 @@ from utils.roles import requires_roles
 from utils.create_admin import create_admin_account
 from utils.register import check_existing_uids, check_if_user_exists, if_sensor_registered, update_record_status, \
     if_uid_registered, update_uid_status
-from utils.users import get_people_on_site, get_user_profile, get_users
+from utils.users import get_people_on_site, get_user_profile, get_users, get_user_records
 from utils.sensors import check_if_sensor_id_exists, display_registered_sensors, filter_sensors, \
     get_sensor_specific_records
 
@@ -148,7 +148,7 @@ def user():
 @app.route('/user-profile/<id>')
 @requires_roles('admin')
 def user_profile(id):
-    return render_template("user-profile.html", user=get_user_profile(User, id))
+    return render_template("user-profile.html", user=get_user_profile(User, id), records=get_user_records(Record, User))
 
 
 @app.route('/user-profile/<id>/edit', methods=["GET", "POST"])
