@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% from "_formhelpers.html" import render_field %}
+
+{% block title %} Sensors{{ super() }} {% endblock %}
+
+{% block content %}
+
+<h4>Records for <b style="color: grey">{{ sensor_id }}</b></h4>
+
+{% if records !=[] %}
+
+<table class="table">
+    <tr>
+        <th>User ID</th>
+        <th>Timestamp</th>
+        <th>If card registered</th>
+
+    </tr>
+    <tr>
+    {% for record in records %}
+        <td>{{ record.user_id }}</td>
+        <td>{{ record.timestamp }}</td>
+        {% if record.in_use == 1 %}
+            <td>True</td>
+        {% else %}
+            <td>False</td>
+        {% endif %}
+    </tr>
+    {% endfor %}
+
+</table>
+
+{% else %}
+
+No records for this sensor yet.
+
+{% endif %}
+
+{% endblock %}

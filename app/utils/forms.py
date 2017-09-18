@@ -45,11 +45,9 @@ class EditForm(FlaskForm):
 
 
 class AddSensorForm(FlaskForm):
-    sensor_place = StringField('Sensor place', validators=[InputRequired()])
-    sensor_id = StringField('Sensor ID', validators=[InputRequired()])
+    sensor_place = StringField('Sensor place', validators=[InputRequired(message="Enter sensor place")])
+    sensor_id = StringField('Sensor ID', validators=[InputRequired(message="Enter sensor ID")])
 
 
 class FilterSensorForm(FlaskForm):
-    filter_type = RadioField("Select filter:", choices=[('place_id', "Place"), ('sensor_id', "Sensor")])
-    sensor_name = StringField('Sensor name')
     place_name = StringField('Place name')

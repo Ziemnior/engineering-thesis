@@ -15,7 +15,8 @@ from utils.create_admin import create_admin_account
 from utils.register import check_existing_uids, check_if_user_exists, if_sensor_registered, update_record_status, \
     if_uid_registered, update_uid_status
 from utils.users import get_people_on_site, get_user_profile, get_users
-from utils.sensors import check_if_sensor_exists, display_registered_sensors, filter_sensors
+from utils.sensors import check_if_sensor_id_exists, display_registered_sensors, filter_sensors, \
+    get_sensor_specific_records
 
 app = Flask(__name__)
 Bootstrap(app)
@@ -100,13 +101,13 @@ def addsensor():
     form = AddSensorForm()
     if form.validate_on_submit():
         with create_session() as session:
-            if not check_if_sensor_exists(form, session, Sensor):
+            if not check_if_sensor_id_exists(form, session, Sensor):
                 sensor = Sensor(place_id=form.sensor_place.data, sensor_id=form.sensor_id.data)
                 session.add(sensor)
                 update_record_status(form, session, Record)
                 flash("Sensor added successfully", "success")
             else:
-                flash("Sensor already registered in databsae", "error")
+                flash("Sensor ID already registered in database", "error")
         return redirect(url_for('sensors'))
     return render_template("addsensor.html", form=form)
 
@@ -123,6 +124,13 @@ def sensors():
 def sensor_filter():
     filter_form = FilterSensorForm()
     return render_template("sensor.html", sensors=filter_sensors(filter_form, Sensor), filter_form=filter_form, flag=1)
+
+
+@app.route("/sensor/<sensor_id>", methods=["GET", "POST"])
+@requires_roles('admin')
+def sensor_records(sensor_id):
+    return render_template("sensor-records.html", records=get_sensor_specific_records(Record, sensor_id),
+                           sensor_id=sensor_id)
 
 
 @app.route("/onsite")
