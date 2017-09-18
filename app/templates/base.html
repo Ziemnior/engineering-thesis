@@ -31,8 +31,8 @@
                         {% if current_user.is_anonymous %}
                         <li><a href="/login">Log in</a></li>
                         {% elif current_user.is_authenticated %}
-                        <li><p class="navbar-text navbar-left"><a href="/user-profile/{{ current_user.id }}"
-                                                                  class="navbar-link">Welcome, {{
+                        <li><p class="navbar-text navbar-left">Welcome, <a href="/user-profile/{{ current_user.id }}"
+                                                                  class="navbar-link">{{
                             current_user.name }} {{ current_user.surname
                             }}</a></p></li>
                         <li><a href="/logout">Log out</a></li>

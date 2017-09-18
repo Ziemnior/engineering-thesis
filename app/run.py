@@ -14,7 +14,7 @@ from utils.roles import requires_roles
 from utils.create_admin import create_admin_account
 from utils.register import check_existing_uids, check_if_user_exists, if_sensor_registered, update_record_status, \
     if_uid_registered, update_uid_status
-from utils.users import get_people_on_site
+from utils.users import get_people_on_site, get_user_profile, get_users
 from utils.sensors import check_if_sensor_exists, display_registered_sensors, filter_sensors
 
 app = Flask(__name__)
@@ -111,14 +111,14 @@ def addsensor():
     return render_template("addsensor.html", form=form)
 
 
-@app.route("/sensor",  methods=["GET", "POST"])
+@app.route("/sensor", methods=["GET", "POST"])
 @requires_roles('admin')
 def sensors():
     filter_form = FilterSensorForm()
     return render_template("sensor.html", sensors=display_registered_sensors(Sensor), filter_form=filter_form)
 
 
-@app.route("/sensor/filter",  methods=["GET", "POST"])
+@app.route("/sensor/filter", methods=["GET", "POST"])
 @requires_roles('admin')
 def sensor_filter():
     filter_form = FilterSensorForm()
@@ -134,17 +134,13 @@ def onsite():
 @app.route('/user')
 @requires_roles('admin')
 def user():
-    with create_session() as session:
-        users = session.query(User).all()
-    return render_template("user.html", users=users)
+    return render_template("user.html", users=get_users(User))
 
 
 @app.route('/user-profile/<id>')
 @requires_roles('admin')
 def user_profile(id):
-    with create_session() as session:
-        user = session.query(User).filter(User.id == id).first()
-    return render_template("user-profile.html", user=user)
+    return render_template("user-profile.html", user=get_user_profile(User, id))
 
 
 @app.route('/user-profile/<id>/edit', methods=["GET", "POST"])
