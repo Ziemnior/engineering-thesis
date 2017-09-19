@@ -51,3 +51,7 @@ class AddSensorForm(FlaskForm):
 
 class FilterSensorForm(FlaskForm):
     place_name = StringField('Place name')
+
+
+class FilterSensorStatusForm(FlaskForm):
+    filter_status = RadioField("Status", choices=[(1, "Registrered"), (0, "Unregistered")])
