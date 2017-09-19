@@ -25,4 +25,10 @@ def filter_sensors(filter_form, sensor_):
 
 def get_sensor_specific_records(record, sensor_id):
     with create_session() as session:
-        return session.query(record).filter_by(sensor_id=sensor_id).all()
+        return session.query(record).filter_by(sensor_id=sensor_id).order_by(record.timestamp.desc()).all()
+
+
+def filter_records_by_status(record, sensor_id, filter_form):
+    with create_session() as session:
+        return session.query(record).filter_by(sensor_id=sensor_id, in_use=filter_form.filter_status.data).order_by(
+            record.timestamp.desc()).all()

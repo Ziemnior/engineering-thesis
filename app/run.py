@@ -9,14 +9,14 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from database import init_db, create_session
 from datetime import datetime
 from models import Record, Sensor, User
-from utils.forms import AddSensorForm, LoginForm, RegisterForm, EditForm, FilterSensorForm
+from utils.forms import AddSensorForm, LoginForm, RegisterForm, EditForm, FilterSensorForm, FilterSensorStatusForm
 from utils.roles import requires_roles
 from utils.create_admin import create_admin_account
 from utils.register import check_existing_uids, check_if_user_exists, if_sensor_registered, update_record_status, \
     if_uid_registered, update_uid_status
 from utils.users import get_people_on_site, get_user_profile, get_users, get_user_records
 from utils.sensors import check_if_sensor_id_exists, display_registered_sensors, filter_sensors, \
-    get_sensor_specific_records
+    get_sensor_specific_records, filter_records_by_status
 
 app = Flask(__name__)
 Bootstrap(app)
@@ -115,22 +115,29 @@ def addsensor():
 @app.route("/sensor", methods=["GET", "POST"])
 @requires_roles('admin')
 def sensors():
-    filter_form = FilterSensorForm()
-    return render_template("sensor.html", sensors=display_registered_sensors(Sensor), filter_form=filter_form)
+    return render_template("sensor.html", sensors=display_registered_sensors(Sensor), filter_form=FilterSensorForm())
 
 
 @app.route("/sensor/filter", methods=["GET", "POST"])
 @requires_roles('admin')
 def sensor_filter():
-    filter_form = FilterSensorForm()
-    return render_template("sensor.html", sensors=filter_sensors(filter_form, Sensor), filter_form=filter_form, flag=1)
+    return render_template("sensor.html", sensors=filter_sensors(filter_form, Sensor), filter_form=FilterSensorForm(),
+                           flag=1)
 
 
 @app.route("/sensor/<sensor_id>", methods=["GET", "POST"])
 @requires_roles('admin')
 def sensor_records(sensor_id):
     return render_template("sensor-records.html", records=get_sensor_specific_records(Record, sensor_id),
-                           sensor_id=sensor_id)
+                           sensor_id=sensor_id, form=FilterSensorStatusForm())
+
+
+@app.route("/sensor/<sensor_id>/filter", methods=["GET", "POST"])
+@requires_roles('admin')
+def sensor_records_filter(sensor_id):
+    form = FilterSensorStatusForm()
+    return render_template("sensor-records.html", form=form, records=filter_records_by_status(Record, sensor_id, form),
+                           sensor_id=sensor_id, flag=1)
 
 
 @app.route("/onsite")

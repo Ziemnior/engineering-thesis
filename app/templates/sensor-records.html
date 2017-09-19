@@ -5,7 +5,32 @@
 
 {% block content %}
 
-<h4>Records for <b style="color: grey">{{ sensor_id }}</b></h4>
+<h4>Records for <b style="color: grey">{{ sensor_id }}</b> (Total: {{ records|length }})</h4>
+
+<div class="container">
+    <br>
+    <br>
+    <div class="row">
+        <div class="col-sm-4"></div>
+        <div class="col-sm-4">
+            <form action="{{ url_for('sensor_records_filter', sensor_id=sensor_id) }}" method="POST">
+                {{ render_field(form.filter_status, class="radio", style="list-style-type: none") }}
+                <div align="right">
+                    {% if flag == 1 %}
+                    <a href="{{ url_for('sensor_records', sensor_id=sensor_id) }}" class="btn btn-primary" align="left">Clear
+                        filter</a>
+                    {% endif %}
+                    <input class="btn btn-default" type="submit" value="Apply filter">
+                </div>
+            </form>
+        </div>
+        <div class="col-sm-4"></div>
+        <div class="col-sm-4"></div>
+    </div>
+</div>
+
+<br>
+<br>
 
 {% if records !=[] %}
 
