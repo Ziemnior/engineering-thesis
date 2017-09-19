@@ -31,8 +31,8 @@
 No users to display.
 {% endif %}
 
-
-<h4>Last 10 records for <b style="color: grey">{{ user.name }} {{ user.surname }}</b></h4>
+<h4>Last 10 records for <b style="color: grey">{{ user.name }} {{ user.surname }}</b> (Total: <a
+        href="{{ url_for('user_records', id=user.id) }}"> {{ records|length }}</a>)</h4>
 
 {% if records !=[] %}
 
@@ -41,10 +41,9 @@ No users to display.
         <th>User ID</th>
         <th>Sensor ID</th>
         <th>Timestamp</th>
-
     </tr>
     <tr>
-        {% for record in records %}
+        {% for record in records[:10] %}
         <td>{{ record.user_id }}</td>
         <td>{{ record.sensor_id }}</td>
         <td>{{ record.timestamp }}</td>
@@ -60,4 +59,3 @@ No records for this sensor yet.
 {% endif %}
 
 {% endblock %}
-
