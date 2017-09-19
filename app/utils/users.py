@@ -25,9 +25,5 @@ def get_users(user):
 
 def get_user_records(record, user):
     with create_session() as session:
-        return session.query(record).filter_by(user_id=user.card_id, is_registered=True).limit(10)
-
-
-def get_all_user_records(record, user):
-    with create_session() as session:
-        return session.query(record).filter_by(user_id=user.card_id, is_registered=True).all()
+        return session.query(record).filter_by(user_id=user.card_id, is_registered=True).order_by(
+            record.timestamp.desc()).all()

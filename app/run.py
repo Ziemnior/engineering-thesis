@@ -151,6 +151,12 @@ def user_profile(id):
     return render_template("user-profile.html", user=get_user_profile(User, id), records=get_user_records(Record, User))
 
 
+@app.route('/user-profile/<id>/all-records')
+@requires_roles('admin')
+def user_records(id):
+    return render_template("user-records.html", user=get_user_profile(User, id), records=get_user_records(Record, User))
+
+
 @app.route('/user-profile/<id>/edit', methods=["GET", "POST"])
 def edit_profile(id):
     with create_session() as session:

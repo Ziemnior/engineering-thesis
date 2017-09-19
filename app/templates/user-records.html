@@ -1,0 +1,35 @@
+{% from "_formhelpers.html" import render_field %}
+{% extends "base.html" %}
+
+{% block title %}User profile{{ super() }}{% endblock %}
+
+{% block content %}
+
+<h4>All records for <b style="color: grey">{{ user.name }} {{ user.surname }}</b> (Total: {{ records|length }})</h4>
+
+{% if records !=[] %}
+
+<table class="table">
+    <tr>
+        <th>User ID</th>
+        <th>Sensor ID</th>
+        <th>Timestamp</th>
+    </tr>
+    <tr>
+        {% for record in records %}
+        <td>{{ record.user_id }}</td>
+        <td>{{ record.sensor_id }}</td>
+        <td>{{ record.timestamp }}</td>
+    </tr>
+    {% endfor %}
+
+</table>
+
+{% else %}
+
+No records for this sensor yet.
+
+{% endif %}
+
+{% endblock %}
+
