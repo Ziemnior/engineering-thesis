@@ -155,13 +155,13 @@ def user():
 @app.route('/user-profile/<id>')
 @requires_roles('admin')
 def user_profile(id):
-    return render_template("user-profile.html", user=get_user_profile(User, id), records=get_user_records(Record, User))
+    return render_template("user-profile.html", user=get_user_profile(User, id), records=get_user_records(Record, get_user_profile(User, id)))
 
 
 @app.route('/user-profile/<id>/all-records')
 @requires_roles('admin')
 def user_records(id):
-    return render_template("user-records.html", user=get_user_profile(User, id), records=get_user_records(Record, User))
+    return render_template("user-records.html", user=get_user_profile(User, id), records=get_user_records(Record, get_user_profile(User, id)))
 
 
 @app.route('/user-profile/<id>/edit', methods=["GET", "POST"])
