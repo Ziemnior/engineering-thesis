@@ -58,4 +58,14 @@ No records for this sensor yet.
 
 {% endif %}
 
+{% for key, elem in work_time.items() %}
+Work duration: {{ elem[0] }}
+<br>
+Shift start: {{ elem[2] }}
+<br>
+Shift end: {{ elem[1] }}
+<br>
+<br>
+{% endfor %}
+
 {% endblock %}
