@@ -17,6 +17,7 @@ from utils.register import check_existing_uids, check_if_user_exists, if_sensor_
 from utils.users import get_people_on_site, get_user_profile, get_users, get_user_records
 from utils.sensors import check_if_sensor_id_exists, display_registered_sensors, filter_sensors, \
     get_sensor_specific_records, filter_records_by_status
+from utils.records import calculate_worktime
 
 app = Flask(__name__)
 Bootstrap(app)
@@ -155,13 +156,16 @@ def user():
 @app.route('/user-profile/<id>')
 @requires_roles('admin')
 def user_profile(id):
-    return render_template("user-profile.html", user=get_user_profile(User, id), records=get_user_records(Record, get_user_profile(User, id)))
+    return render_template("user-profile.html", user=get_user_profile(User, id),
+                           records=get_user_records(Record, get_user_profile(User, id)),
+                           work_time=calculate_worktime(get_user_records(Record, get_user_profile(User, id))))
 
 
 @app.route('/user-profile/<id>/all-records')
 @requires_roles('admin')
 def user_records(id):
-    return render_template("user-records.html", user=get_user_profile(User, id), records=get_user_records(Record, get_user_profile(User, id)))
+    return render_template("user-records.html", user=get_user_profile(User, id),
+                           records=get_user_records(Record, get_user_profile(User, id)))
 
 
 @app.route('/user-profile/<id>/edit', methods=["GET", "POST"])
