@@ -17,7 +17,7 @@ def calculate_usual_worktime(user):
     i = 0
     for boundaries in get_workday_boundaries(user):
         business_time = BusinessHours(boundaries[1].timestamp, boundaries[0].timestamp)
-        worktime[i] = [business_time.get_minutes(), boundaries[0].timestamp, boundaries[1].timestamp]
+        worktime[i] = [business_time.get_hours_minutes(), boundaries[0].timestamp, boundaries[1].timestamp]
         i += 1
     return worktime
 
