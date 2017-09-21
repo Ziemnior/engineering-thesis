@@ -35,6 +35,9 @@ class BusinessHours:
     def get_hours(self):
         return int(self.get_minutes() / 60)
 
+    def get_hours_minutes(self):
+        return str(datetime.timedelta(minutes=self.get_minutes()))[:-3]
+
     def get_minutes(self):
         """
         Return the difference in minutes.

@@ -26,7 +26,7 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 
 app.config['SECRET_KEY'] = 'secretkey'
-app.config['TEMPLATES_AUTO_RELOAD'] = True
+app.jinja_env.auto_reload = True
 
 
 @login_manager.user_loader
@@ -154,22 +154,34 @@ def user():
 
 
 @app.route('/user-profile/<id>')
-@requires_roles('admin')
+@requires_roles('user', 'admin')
 def user_profile(id):
-    return render_template("user-profile.html", user=get_user_profile(User, id),
-                           records=get_user_records(Record, get_user_profile(User, id)),
-                           work_time=calculate_usual_worktime(get_user_records(Record, get_user_profile(User, id))),
-                           overtime=calculate_overtime(get_user_records(Record, get_user_profile(User, id))))
+    return render_template("user-profile.html", user=get_user_profile(User, id))
 
 
-@app.route('/user-profile/<id>/all-records')
-@requires_roles('admin')
+@app.route('/user-profile/<id>/records')
+@requires_roles('user', 'admin')
 def user_records(id):
     return render_template("user-records.html", user=get_user_profile(User, id),
                            records=get_user_records(Record, get_user_profile(User, id)))
 
 
+@app.route('/user-profile/<id>/all-records')
+@requires_roles('user', 'admin')
+def user_records_all(id):
+    return render_template("user-records-all.html", user=get_user_profile(User, id),
+                           records=get_user_records(Record, get_user_profile(User, id)))
+
+
+@app.route('/user-profile/<id>/shifts')
+@requires_roles('user', 'admin')
+def user_shifts(id):
+    return render_template("user-shifts.html", user=get_user_profile(User, id),
+                           work_time=calculate_usual_worktime(get_user_records(Record, get_user_profile(User, id))))
+
+
 @app.route('/user-profile/<id>/edit', methods=["GET", "POST"])
+@requires_roles('user', 'admin')
 def edit_profile(id):
     with create_session() as session:
         user = session.query(User).filter(User.id == id).first()
@@ -185,6 +197,5 @@ def edit_profile(id):
 
 if __name__ == "__main__":
     init_db()
-
     create_admin_account()
-    app.run()
+    app.run(debug=True)
