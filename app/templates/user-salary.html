@@ -1,0 +1,20 @@
+{% from "_formhelpers.html" import render_field %}
+{% extends "base.html" %}
+
+{% block title %}User salary{{ super() }}{% endblock %}
+
+{% block content %}
+
+{% with active_page = "salary" %}
+{% include "user-profile-nav.html" %}
+{% endwith %}
+
+<h4>User salary</h4>
+
+{% for key, value in salary.items() %}
+{{ key[0] }}.{{ key[1] }}: {{ value }} hours, {{ value*10 }} PLN
+<br>
+{% endfor %}
+
+{% endblock %}
+

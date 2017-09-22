@@ -1,6 +1,7 @@
 from database import create_session
 from utils.businesshours import BusinessHours
 from datetime import timedelta
+from collections import Counter
 
 
 def get_even_workdays(records):
@@ -40,3 +41,10 @@ def calculate_overtime(user):
     for key, value in calculate_usual_worktime(user).items():
         overtime[key] = real_time[key] - value[0]
     return overtime
+
+
+def calculate_monthly_salary(user):
+    salary = Counter()
+    for key, value in calculate_usual_worktime(user).items():
+        salary[(value[1].month, value[1].year)] += int(value[0].total_seconds() / 3600)
+    return salary
