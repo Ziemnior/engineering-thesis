@@ -1,5 +1,6 @@
 from database import create_session
 from utils.businesshours import BusinessHours
+from datetime import timedelta
 
 
 def get_even_workdays(records):
@@ -17,7 +18,8 @@ def calculate_usual_worktime(user):
     i = 0
     for boundaries in get_workday_boundaries(user):
         business_time = BusinessHours(boundaries[1].timestamp, boundaries[0].timestamp)
-        worktime[i] = [business_time.get_hours_minutes(), boundaries[0].timestamp, boundaries[1].timestamp]
+        worktime[i] = [timedelta(seconds=(business_time.get_seconds())), boundaries[0].timestamp,
+                       boundaries[1].timestamp]
         i += 1
     return worktime
 
@@ -26,14 +28,15 @@ def calculate_real_time(user):
     real_time = dict()
     i = 0
     for boundaries in get_workday_boundaries(user):
-        real_time[i] = (boundaries[0].timestamp - boundaries[1].timestamp).seconds // 60
+        time_in_seconds = (boundaries[0].timestamp - boundaries[1].timestamp).total_seconds()
+        real_time[i] = timedelta(seconds=(int(time_in_seconds)))
         i += 1
     return real_time
 
 
 def calculate_overtime(user):
-    overtime = dict()
     real_time = calculate_real_time(user)
+    overtime = dict()
     for key, value in calculate_usual_worktime(user).items():
         overtime[key] = real_time[key] - value[0]
     return overtime
