@@ -18,12 +18,16 @@
         <th>Entered</th>
         <th>Left</th>
         <th>Work duration (hh:mm)</th>
+        <th>Real time</th>
+        <th>Overtime</th>
     </tr>
     <tr>
         {% for key, elem in work_time.items() %}
         <td>{{ elem[2].strftime('%Y-%m-%d %H:%M:%S') }}</td>
         <td>{{ elem[1].strftime('%Y-%m-%d %H:%M:%S') }}</td>
         <td>{{ elem[0] }}</td>
+        <td>{{ real_time[key] }}</td>
+        <td>{{ overtime[key] }}</td>
     </tr>
     {% endfor %}
 

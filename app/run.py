@@ -17,7 +17,7 @@ from utils.register import check_existing_uids, check_if_user_exists, if_sensor_
 from utils.users import get_people_on_site, get_user_profile, get_users, get_user_records
 from utils.sensors import check_if_sensor_id_exists, display_registered_sensors, filter_sensors, \
     get_sensor_specific_records, filter_records_by_status
-from utils.records import calculate_usual_worktime, calculate_overtime
+from utils.records import calculate_usual_worktime, calculate_overtime, calculate_real_time
 
 app = Flask(__name__)
 Bootstrap(app)
@@ -177,7 +177,9 @@ def user_records_all(id):
 @requires_roles('user', 'admin')
 def user_shifts(id):
     return render_template("user-shifts.html", user=get_user_profile(User, id),
-                           work_time=calculate_usual_worktime(get_user_records(Record, get_user_profile(User, id))))
+                           work_time=calculate_usual_worktime(get_user_records(Record, get_user_profile(User, id))),
+                           real_time=calculate_real_time(get_user_records(Record, get_user_profile(User, id))),
+                           overtime=calculate_overtime(get_user_records(Record, get_user_profile(User, id))))
 
 
 @app.route('/user-profile/<id>/edit', methods=["GET", "POST"])

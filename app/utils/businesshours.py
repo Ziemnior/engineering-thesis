@@ -32,13 +32,10 @@ class BusinessHours:
                         days = days - 1
         return days
 
-    def get_hours(self):
-        return int(self.get_minutes() / 60)
-
-    def get_hours_minutes(self):
-        return str(datetime.timedelta(minutes=self.get_minutes()))[:-3]
-
     def get_minutes(self):
+        return int(self.get_seconds() / 60)
+
+    def get_seconds(self):
         """
         Return the difference in minutes.
         """
@@ -113,7 +110,7 @@ class BusinessHours:
                         hour=self.worktiming[0],
                         minute=0)
                     worktime += (dt_end - dt_end_open).total_seconds()
-        return int(worktime / 60)
+        return int(worktime)
 
     def is_weekend(self, datetime):
         """
