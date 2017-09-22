@@ -1,7 +1,8 @@
 {% set navigation_bar = [
     (url_for('user_profile', id=user.id), 'profile',  'User profile'),
     (url_for('user_records', id=user.id), 'records', 'Records'),
-    (url_for('user_shifts', id=user.id), 'shifts', 'Shifts')
+    (url_for('user_shifts', id=user.id), 'shifts', 'Shifts'),
+    (url_for('user_salary', id=user.id), 'salary', 'Salary'),
 ] -%}
 
 <ul class="nav nav-tabs">
