@@ -18,6 +18,11 @@ def process_record(record, user, sensor, request, response, if_sensor_registered
     return response(status=201)
 
 
+def delete_record(record, id):
+    with create_session() as session:
+        return session.query(record).filter(record.id == id).delete()
+
+
 def get_even_workdays(records):
     if len(records) % 2 == 1:
         records.pop(0)
