@@ -23,15 +23,17 @@
                 <br>
                 {{ render_field(form.user_id) }}
                 <div align="right">
+                    <a href="{{ url_for('delete_profile', id=user.id) }}" class="btn btn-danger">Delete account</a>
                     <input class="btn btn-default" type="submit" value="Save changes">
-                </div>
             </form>
-            <p>{{error}}</p>
+
         </div>
-        <div class="col-sm-4"></div>
-        <div class="col-sm-4">
-        </div>
+        <p>{{error}}</p>
     </div>
+    <div class="col-sm-4"></div>
+    <div class="col-sm-4">
+    </div>
+</div>
 </div>
 
 {% endblock %}

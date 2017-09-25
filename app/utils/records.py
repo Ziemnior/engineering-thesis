@@ -1,7 +1,21 @@
 from database import create_session
 from utils.businesshours import BusinessHours
-from datetime import timedelta
+from datetime import timedelta, datetime
 from collections import Counter
+import json
+import requests
+
+
+def process_record(record, user, sensor, request, response, if_sensor_registered, if_uid_registered):
+    data = json.loads(request.data)
+    with create_session() as session:
+        record = record(sensor_id=data["sensor_id"],
+                        user_id=data["user_id"],
+                        is_registered=if_sensor_registered(data, session, sensor),
+                        in_use=if_uid_registered(data, session, user),
+                        timestamp=datetime.now())
+        session.add(record)
+    return response(status=201)
 
 
 def get_even_workdays(records):
@@ -46,5 +60,5 @@ def calculate_overtime(user):
 def calculate_monthly_salary(user):
     salary = Counter()
     for key, value in calculate_usual_worktime(user).items():
-        salary[(value[1].month, value[1].year)] += int(value[0].total_seconds() / 3600)
+        salary[(value[1].month, value[1].year)] += value[0].total_seconds() / 3600
     return salary
