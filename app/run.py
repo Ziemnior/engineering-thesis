@@ -12,7 +12,7 @@ from utils.register import check_existing_uids, check_if_user_exists, if_sensor_
     if_uid_registered, update_uid_status
 from utils.users import get_people_on_site, get_user_profile, get_users, get_user_records, delete_user
 from utils.sensors import check_if_sensor_id_exists, display_registered_sensors, filter_sensors, \
-    get_sensor_specific_records, filter_records_by_status
+    get_sensor_specific_records, filter_records_by_status, delete_sensor
 from utils.records import calculate_usual_worktime, calculate_overtime, calculate_real_time, calculate_monthly_salary, \
     process_record
 
@@ -128,6 +128,13 @@ def sensor_records_filter(sensor_id):
     form = FilterSensorStatusForm()
     return render_template("sensor-records.html", form=form, records=filter_records_by_status(Record, sensor_id, form),
                            sensor_id=sensor_id, flag=1)
+
+
+@app.route("/sensor/<sensor_id>/delete", methods=["GET", "POST"])
+@requires_roles('admin')
+def delete_sensors(sensor_id):
+    delete_sensor(Sensor, sensor_id)
+    return redirect(url_for('sensors'))
 
 
 @app.route("/onsite")
