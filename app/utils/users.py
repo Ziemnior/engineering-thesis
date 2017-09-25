@@ -27,3 +27,8 @@ def get_user_records(record, user):
     with create_session() as session:
         return session.query(record).filter_by(user_id=user.card_id, is_registered=True).order_by(
             record.timestamp.desc()).all()
+
+
+def delete_user(user, id):
+    with create_session() as session:
+        return session.query(user).filter(user.id == id).delete()

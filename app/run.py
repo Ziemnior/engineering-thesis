@@ -1,23 +1,20 @@
-import json
-import requests
-
 from flask import Flask, Response, request, render_template, flash, redirect, url_for
 from flask_bootstrap import Bootstrap
 from flask_login import LoginManager, login_required, login_user, logout_user
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from database import init_db, create_session
-from datetime import datetime
 from models import Record, Sensor, User
 from utils.forms import AddSensorForm, LoginForm, RegisterForm, EditForm, FilterSensorForm, FilterSensorStatusForm
 from utils.roles import requires_roles
 from utils.create_admin import create_admin_account
 from utils.register import check_existing_uids, check_if_user_exists, if_sensor_registered, update_record_status, \
     if_uid_registered, update_uid_status
-from utils.users import get_people_on_site, get_user_profile, get_users, get_user_records
+from utils.users import get_people_on_site, get_user_profile, get_users, get_user_records, delete_user
 from utils.sensors import check_if_sensor_id_exists, display_registered_sensors, filter_sensors, \
     get_sensor_specific_records, filter_records_by_status
-from utils.records import calculate_usual_worktime, calculate_overtime, calculate_real_time, calculate_monthly_salary
+from utils.records import calculate_usual_worktime, calculate_overtime, calculate_real_time, calculate_monthly_salary, \
+    process_record
 
 app = Flask(__name__)
 Bootstrap(app)
@@ -37,15 +34,7 @@ def load_user(user_id):
 
 @app.route("/api/post-record", methods=["POST"])
 def process_record_post():
-    data = json.loads(request.data)
-    with create_session() as session:
-        record = Record(sensor_id=data["sensor_id"],
-                        user_id=data["user_id"],
-                        is_registered=if_sensor_registered(data, session, Sensor),
-                        in_use=if_uid_registered(data, session, User),
-                        timestamp=datetime.now())
-        session.add(record)
-    return Response(status=201)
+    return process_record(Record, User, Sensor, request, Response, if_sensor_registered, if_uid_registered)
 
 
 @app.route("/")
@@ -185,7 +174,8 @@ def user_shifts(id):
 @app.route('/user-profile/<id>/salary')
 @requires_roles('user', 'admin')
 def user_salary(id):
-    return render_template("user-salary.html", user=get_user_profile(User, id), salary=calculate_monthly_salary(get_user_records(Record, get_user_profile(User, id))))
+    return render_template("user-salary.html", user=get_user_profile(User, id),
+                           salary=calculate_monthly_salary(get_user_records(Record, get_user_profile(User, id))))
 
 
 @app.route('/user-profile/<id>/edit', methods=["GET", "POST"])
@@ -201,6 +191,13 @@ def edit_profile(id):
             flash("Profile updated successfully", "success")
             return redirect(url_for('user_profile', id=id))
     return render_template("user-profile-edit.html", id=id, form=form, user=user)
+
+
+@app.route('/user-profile/<id>/delete', methods=["GET", "POST"])
+@requires_roles('admin')
+def delete_profile(id):
+    delete_user(User, id)
+    return redirect(url_for('user'))
 
 
 if __name__ == "__main__":
