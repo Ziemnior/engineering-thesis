@@ -14,7 +14,7 @@ from utils.users import get_people_on_site, get_user_profile, get_users, get_use
 from utils.sensors import check_if_sensor_id_exists, display_registered_sensors, filter_sensors, \
     get_sensor_specific_records, filter_records_by_status, delete_sensor
 from utils.records import calculate_usual_worktime, calculate_overtime, calculate_real_time, calculate_monthly_salary, \
-    process_record
+    process_record, delete_record
 
 app = Flask(__name__)
 Bootstrap(app)
@@ -134,7 +134,16 @@ def sensor_records_filter(sensor_id):
 @requires_roles('admin')
 def delete_sensors(sensor_id):
     delete_sensor(Sensor, sensor_id)
+    flash("Sensor " + sensor_id + " successfully removed", "info")
     return redirect(url_for('sensors'))
+
+
+@app.route('/sensor/<sensor_id>/<record_id>', methods=["GET", "POST"])
+@requires_roles('admin')
+def delete_records_sensor_view(sensor_id, record_id):
+    delete_record(Record, record_id)
+    flash("Record with ID " + record_id + " successfully removed", "info")
+    return redirect(url_for('sensor_records', sensor_id=sensor_id))
 
 
 @app.route("/onsite")
@@ -204,7 +213,16 @@ def edit_profile(id):
 @requires_roles('admin')
 def delete_profile(id):
     delete_user(User, id)
+    flash("User with ID " + id + " successfully removed", "info")
     return redirect(url_for('user'))
+
+
+@app.route('/user-profile/delete-record/<id>/<record_id>', methods=["GET", "POST"])
+@requires_roles('admin')
+def delete_records(id, record_id):
+    delete_record(Record, record_id)
+    flash("Record with ID " + record_id + " successfully removed", "info")
+    return redirect(url_for('user_profile', id=id))
 
 
 if __name__ == "__main__":
