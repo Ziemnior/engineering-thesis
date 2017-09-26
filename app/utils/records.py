@@ -49,7 +49,7 @@ def calculate_real_time(user):
     i = 0
     for boundaries in get_workday_boundaries(user):
         time_in_seconds = (boundaries[0].timestamp - boundaries[1].timestamp).total_seconds()
-        real_time[i] = timedelta(seconds=(int(time_in_seconds)))
+        real_time[i] = [timedelta(seconds=(int(time_in_seconds))), boundaries[0].timestamp, boundaries[1].timestamp]
         i += 1
     return real_time
 
@@ -58,12 +58,20 @@ def calculate_overtime(user):
     real_time = calculate_real_time(user)
     overtime = dict()
     for key, value in calculate_usual_worktime(user).items():
-        overtime[key] = real_time[key] - value[0]
+        overtime[key] = [real_time[key][0] - value[0], value[1], value[2]]
+
     return overtime
 
 
-def calculate_monthly_salary(user):
+def calculate_basic_salary(user):
     salary = Counter()
     for key, value in calculate_usual_worktime(user).items():
         salary[(value[1].month, value[1].year)] += value[0].total_seconds() / 3600
     return salary
+
+
+def calculate_extended_salary(user):
+    extended_salary = Counter()
+    for key, value in calculate_overtime(user).items():
+        extended_salary[(value[1].month, value[1].year)] += value[0].total_seconds() / 3600
+    return extended_salary

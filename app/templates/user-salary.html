@@ -11,10 +11,39 @@
 
 <h4>User salary</h4>
 
-{% for key, value in salary.items() %}
-{{ key[0] }}.{{ key[1] }}: {{ value|int }} hours, {{ (value*10)|round(2, 'floor') }} PLN
-<br>
-{% endfor %}
+{% if salary !=[] %}
+
+<table class="table">
+    <tr>
+        <th>Settlement period</th>
+        <th>Regular time</th>
+        <th>Overtime</th>
+        <th>Basic salary</th>
+        <th>Extended salary</th>
+        <th>Total numer of hours</th>
+        <th>Total salary</th>
+    </tr>
+    <tr>
+        {% for key, value in salary.items() %}
+        <td>{{ key[0]|int_to_month }} {{ key[1] }}</td>
+        <td>{{ value|int }} ({{ value|int_to_hour }}) hours</td>
+        <td>{{ extened_salary[key]|int }} ({{ extened_salary[key]|int_to_hour }}) hours</td>
+        <td>{{ (value*10)|round(2, 'floor') }} PLN</td>
+        <td>{{ (extened_salary[key] * 10)|round(2, 'floor') }} PLN</td>
+        <td>{{ (value + extened_salary[key])|int }} ({{ (value + extened_salary[key])|int_to_hour}}) hours
+        </td>
+        <td>{{ ((value*10)|round(2, 'floor') + (extened_salary[key] * 10)|round(2, 'floor'))|round(2, 'floor') }} PLN
+        </td>
+    </tr>
+    {% endfor %}
+
+</table>
+
+{% else %}
+
+No shifts registered for this user yet.
+
+{% endif %}
 
 {% endblock %}
 
