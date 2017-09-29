@@ -1,72 +1,65 @@
-<script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.0/Chart.js'></script>
 
-<div id="wrapper" style="position: relative; height: 50vh; width: 90%" class="center-block">
-<canvas id="chart"></canvas>
+<div id="wrapper" style="position: relative; height: 40vh; width: 90vw" class="center-block">
+    <canvas id="chart"></canvas>
 </div>
 
 <script>
+   var canvas =  document.getElementById("chart");
+   var ctx = canvas.getContext("2d");
 
-   steps = 10
-   max = 16
-
-   var lineData = {
-   labels : [{% for key, elem in work_time.items()|reverse %}
-                "{{ elem[2].strftime('%Y-%m-%d %H:%M:%S') }}",
-             {% endfor %}],
-   datasets : [{
-            fillColor: "rgba(151,187,205,0.2)",
-            strokeColor: "rgba(151,187,205,1)",
-            pointColor: "rgba(151,187,205,1)",
+   new Chart(ctx, {
+   type: 'line',
+   data: {
+        labels : [{% for key, elem in work_time.items()|reverse %}
+                    "{{ elem[2].strftime('%Y-%m-%d %H:%M:%S') }}",
+                  {% endfor %}],
+        datasets : [{
+            label: 'regular work time',
+            backgroundColor: "rgba(151,187,205,0.2)",
             data : [{% for key, elem in work_time.items()|reverse %}
                         {{ elem[0]|timedelta_to_hour }},
                     {% endfor %}]
-            },
-            {
-            fillColor: "rgba(151,0,205,0.2)",
-            strokeColor: "rgba(151,0,205,0.2)",
-            pointColor: "rgba(151,0,205,0.2)",
+            }, {
+            label: 'overtime',
+            backgroundColor: "rgba(151,0,205,0.2)",
             data : [{% for key, elem in overtime.items()|reverse %}
                         {{ elem[0]|timedelta_to_hour }},
                     {% endfor %}]
-                    }]
-   }
-
-   var chartOptions = {
-        data: lineData,
-        scaleOverride: true,
-        scaleSteps: steps,
-        scaleStepWidth: Math.ceil(max / steps),
-        scaleStartValue: 0,
+                   }]},
+   options: {
         scaleShowVerticalLines: true,
         scaleShowGridLines : true,
         barShowStroke : true,
         responsive: true,
         maintainAspectRatio: false,
-
-   legend : {
-        display: true,
-        position: 'top',
-        labels: {
-            fontColor: "#000080",
+        legend : {
+            display: true,
+            position: 'top',
+            labels: {
+                fontColor: "#000000",
                 }
-        },
-
-   tooltips : {
-        enabled : true,
+            },
+        tooltips : {
+            enabled : true,
+            intersect: false,
             callbacks : {
-                footer : function(tooltipItems, data) {
-                    return 'sfsdfds';
-                },
-                label : function(tooltipItems, data) {
-                    return tooltipItems.yLabel + ' hours';
+                label : function(tooltipItem, data) {
+                    return tooltipItem.yLabel + ' hours';
+                    }
                 }
+            },
+        scales: {
+            yAxes: [{
+                ticks: {
+                    min: 0,
+                    max: 18,
+                    }
+                }]
             }
         }
-    }
+   });
 
-   var mychart = document.getElementById("chart").getContext("2d");
-
-   new Chart(mychart).Line(lineData, chartOptions);
 
 </script>
 
