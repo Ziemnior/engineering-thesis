@@ -59,7 +59,6 @@ def calculate_overtime(user):
     overtime = dict()
     for key, value in calculate_usual_worktime(user).items():
         overtime[key] = [real_time[key][0] - value[0], value[1], value[2]]
-
     return overtime
 
 
