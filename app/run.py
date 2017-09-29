@@ -15,7 +15,7 @@ from utils.sensors import check_if_sensor_id_exists, display_registered_sensors,
     get_sensor_specific_records, filter_records_by_status, delete_sensor
 from utils.records import calculate_usual_worktime, calculate_overtime, calculate_basic_salary, \
     calculate_extended_salary, process_record, delete_record
-from utils.jinja_filters import int_to_month, int_to_hour
+from utils.jinja_filters import int_to_month, int_to_hour, timedelta_to_hour
 
 app = Flask(__name__)
 Bootstrap(app)
@@ -27,6 +27,7 @@ app.config['SECRET_KEY'] = 'secretkey'
 app.jinja_env.auto_reload = True
 app.add_template_filter(int_to_month)
 app.add_template_filter(int_to_hour)
+app.add_template_filter(timedelta_to_hour)
 
 
 @login_manager.user_loader
