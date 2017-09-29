@@ -11,6 +11,12 @@
 
 <h4>User salary</h4>
 
+<br>
+
+{% include "salary-chart.html" %}
+
+<br>
+
 {% if salary !=[] %}
 
 <table class="table">
@@ -28,11 +34,10 @@
         <td>{{ key[0]|int_to_month }} {{ key[1] }}</td>
         <td>{{ value|int }} ({{ value|int_to_hour }}) hours</td>
         <td>{{ extened_salary[key]|int }} ({{ extened_salary[key]|int_to_hour }}) hours</td>
-        <td>{{ (value*10)|round(2, 'floor') }} PLN</td>
-        <td>{{ (extened_salary[key] * 10)|round(2, 'floor') }} PLN</td>
-        <td>{{ (value + extened_salary[key])|int }} ({{ (value + extened_salary[key])|int_to_hour}}) hours
-        </td>
-        <td>{{ ((value*10)|round(2, 'floor') + (extened_salary[key] * 10)|round(2, 'floor'))|round(2, 'floor') }} PLN
+        <td>{{ (value|int)*10 }} PLN</td>
+        <td>{{ (extened_salary[key]|int) * 20 }} PLN</td>
+        <td>{{ (value|int) + (extened_salary[key])|int }} hours</td>
+        <td>{{ ((value|int)*10) + ((extened_salary[key]|int) * 20) }} PLN
         </td>
     </tr>
     {% endfor %}
