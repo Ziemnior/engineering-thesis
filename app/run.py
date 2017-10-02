@@ -5,7 +5,8 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 from database import init_db, create_session
 from models import Record, Sensor, User
-from utils.forms import AddSensorForm, LoginForm, RegisterForm, EditForm, FilterSensorForm, FilterSensorStatusForm
+from utils.forms import AddSensorForm, LoginForm, RegisterForm, EditForm, FilterSensorForm, FilterSensorStatusForm, \
+    ChangePasswordForm
 from utils.roles import requires_roles
 from utils.create_admin import create_admin_account
 from utils.register import check_existing_uids, check_if_user_exists, if_sensor_registered, update_record_status, \
@@ -28,6 +29,12 @@ app.jinja_env.auto_reload = True
 app.add_template_filter(int_to_month)
 app.add_template_filter(int_to_hour)
 app.add_template_filter(timedelta_to_hour)
+
+
+@app.before_first_request
+def initialize():
+    init_db()
+    create_admin_account()
 
 
 @login_manager.user_loader
@@ -79,6 +86,39 @@ def register():
             else:
                 flash("Email or card already registered in the database", "error")
     return render_template('register.html', form=form)
+
+
+@app.route('/user-profile/<id>/edit', methods=["GET", "POST"])
+@requires_roles('user', 'admin')
+def edit_profile(id):
+    with create_session() as session:
+        user = session.query(User).filter(User.id == id).first()
+        form = EditForm(obj=user)
+        form.email.render_kw = {'readonly': True}
+        if form.validate_on_submit():
+            form.populate_obj(user)
+            session.commit()
+            flash("Profile updated successfully", "success")
+            return redirect(url_for('user_profile', id=id))
+    return render_template("user-profile-edit.html", id=id, form=form, user=user)
+
+
+@app.route('/user-profile/<id>/change-password', methods=["GET", "POST"])
+@requires_roles('user', 'admin')
+def change_password(id):
+    with create_session() as session:
+        user = session.query(User).filter(User.id == id).first()
+        form = ChangePasswordForm()
+        if form.validate_on_submit():
+            if check_password_hash(user.password, form.old_password.data):
+                hashed_password = generate_password_hash(form.password.data)
+                user.password = hashed_password
+                session.commit()
+                flash("Password updated successfully", "success")
+                return redirect(url_for('user_profile', id=id))
+            else:
+                flash("Invalid current password", "error")
+    return render_template("user-profile-change-password.html", id=id, form=form, user=user)
 
 
 @app.route("/logout")
@@ -199,21 +239,6 @@ def user_salary(id):
                                get_user_records(Record, get_user_profile(User, id))))
 
 
-@app.route('/user-profile/<id>/edit', methods=["GET", "POST"])
-@requires_roles('user', 'admin')
-def edit_profile(id):
-    with create_session() as session:
-        user = session.query(User).filter(User.id == id).first()
-        form = EditForm(obj=user)
-        form.email.render_kw = {'readonly': True}
-        if form.validate_on_submit():
-            form.populate_obj(user)
-            session.commit()
-            flash("Profile updated successfully", "success")
-            return redirect(url_for('user_profile', id=id))
-    return render_template("user-profile-edit.html", id=id, form=form, user=user)
-
-
 @app.route('/user-profile/<id>/delete', methods=["GET", "POST"])
 @requires_roles('admin')
 def delete_profile(id):
@@ -231,6 +256,4 @@ def delete_records(id, record_id):
 
 
 if __name__ == "__main__":
-    init_db()
-    create_admin_account()
     app.run(debug=True)
