@@ -1,26 +1,34 @@
-{% from "_formhelpers.html" import render_field %}
-{% extends "base.html" %}
-
-{% block title %}User salary{{ super() }}{% endblock %}
+{% extends "bootstrap/base.html" %}
 
 {% block content %}
 
-{% with active_page = "salary" %}
-{% include "user-profile-nav.html" %}
-{% endwith %}
 
-<h4>User salary  <a href="{{ url_for('user_salary_print', id=user.id) }}"
-                                                      class="btn btn-primary" align="center">Download PDF</a></h4>
+<div align="center">
+        {% block title %}<h2><u>Salary</u></h2>{% endblock %}
+</div>
 
 <br>
-
-{% include "salary-chart.html" %}
-
 <br>
 
-{% if salary !={} %}
+<div align="right" style="margin-right: 47%">
+    <table class="table" style="width: auto;  margin: auto;">
+        <tr>
+            <td><b>Name</b></td>
+            <td>{{ user.name}}</td>
+        </tr>
+        <tr>
+            <td><b>Surname</b></td>
+            <td>{{ user.surname}}</td>
+        </tr>
+    </table>
+</div>
 
-<table class="table">
+<br>
+<br>
+
+{% if work_time !={} %}
+
+<table class="table table-bordered table-inverse" style="width: auto ;  margin: 10px auto">
     <tr>
         <th>Settlement period</th>
         <th>Regular time</th>
@@ -42,8 +50,15 @@
         </td>
     </tr>
     {% endfor %}
-
 </table>
+
+<br>
+<br>
+<div align="right" style="margin-right: 20%">
+    <b>Date and signature:</b> .............................
+    <br>
+<b>Supervisor signature:</b> ..............................
+</div>
 
 {% else %}
 
@@ -52,4 +67,6 @@ Nothing to show.
 {% endif %}
 
 {% endblock %}
+
+
 

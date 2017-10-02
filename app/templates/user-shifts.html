@@ -9,15 +9,17 @@
 {% include "user-profile-nav.html" %}
 {% endwith %}
 
-<h4>User shifts (Total: {{ work_time|length }}</a>)</h4>
+<h4>User shifts (Total: {{ work_time|length }}</a>) <a href="{{ url_for('user_shifts_print', id=user.id) }}"
+                                                      class="btn btn-primary" align="center">Download PDF</a></h4>
 
+<br>
 <br>
 
 {% include "shift-chart.html" %}
 
 <br>
 
-{% if work_time !=[] %}
+{% if work_time !={} %}
 
 <table class="table">
     <tr>
