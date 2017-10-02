@@ -255,5 +255,20 @@ def delete_records(id, record_id):
     return redirect(url_for('user_profile', id=id))
 
 
+@app.route('/user-profile/print-shifts-<id>.pdf')
+@requires_roles('user', 'admin')
+def user_shifts_print(id):
+    return render_template("user-shifts-print.html", user=get_user_profile(User, id),
+                           work_time=calculate_usual_worktime(get_user_records(Record, get_user_profile(User, id))),
+                           overtime=calculate_overtime(get_user_records(Record, get_user_profile(User, id))))
+
+
+@app.route('/user-profile/print-salary-<id>.pdf')
+@requires_roles('user', 'admin')
+def user_salary_print(id):
+    return render_template("user-salary-print.html", save=False, download=False, user=get_user_profile(User, id),
+                           salary=calculate_basic_salary(get_user_records(Record, get_user_profile(User, id))),
+                           extened_salary=calculate_extended_salary(get_user_records(Record, get_user_profile(User, id))))
+
 if __name__ == "__main__":
     app.run(debug=True)

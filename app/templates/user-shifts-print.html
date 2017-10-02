@@ -1,0 +1,68 @@
+{% extends "bootstrap/base.html" %}
+
+{% block content %}
+
+
+<div align="center">
+        {% block title %}<h2><u>Shifts</u></h2>{% endblock %}
+</div>
+
+<br>
+<br>
+
+<div align="right" style="margin-right: 25%">
+    <table class="table" style="width: auto;  margin: auto;">
+        <tr>
+            <td><b>Name</b></td>
+            <td>{{ user.name}}</td>
+        </tr>
+        <tr>
+            <td><b>Surname</b></td>
+            <td>{{ user.surname}}</td>
+        </tr>
+        <tr>
+            <td><b>Total number of shifts:</b></td>
+            <td>{{ work_time|length }}</td>
+        </tr>
+    </table>
+</div>
+
+<br>
+<br>
+
+{% if work_time !={} %}
+
+<table class="table table-bordered table-inverse" style="width: auto ;  margin: 10px auto">
+    <tr>
+        <th>Entered</th>
+        <th>Left</th>
+        <th>Work duration (hh:mm)</th>
+        <th>Overtime (hh:mm)</th>
+    </tr>
+    <tr>
+        {% for key, elem in work_time.items() %}
+        <td>{{ elem[2].strftime('%Y-%m-%d %H:%M:%S') }}</td>
+        <td>{{ elem[1].strftime('%Y-%m-%d %H:%M:%S') }}</td>
+        <td>{{ elem[0] }}</td>
+        <td>{{ overtime[key][0] }}</td>
+    </tr>
+    {% endfor %}
+
+</table>
+
+<br>
+<br>
+<div align="right" style="margin-right: 30%">
+    <b>Date and signature:</b> .............................
+    <br>
+<b>Supervisor signature:</b> ..............................
+</div>
+
+{% else %}
+
+No shifts registered for this user yet.
+
+{% endif %}
+
+{% endblock %}
+
