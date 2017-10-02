@@ -38,6 +38,10 @@ class User(Base, UserMixin):
     password = Column(String)
     role = Column(String)
     card_id = Column(String, unique=True)
+    phone_number = Column(Integer)
+    address = Column(String)
+    postal_code = Column(Integer)
+    city = Column(String)
 
     def __repr__(self):
         return "<User(email={}, role={}, card_id={})>".format(self.email, self.role, self.card_id)

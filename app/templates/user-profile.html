@@ -23,9 +23,26 @@
         <td>Role</td>
         <td>{{ user.role }}</td>
     </tr>
+    <tr>
+        <td>Telephone number</td>
+        <td>{{ user.phone_number }}</td>
+    </tr>
+    <tr>
+        <td>Address</td>
+        <td>{{ user.address }}</td>
+    </tr>
+    <tr>
+        <td>Postal code</td>
+        <td>{{ user.postal_code }}</td>
+    </tr>
+    <tr>
+        <td>City</td>
+        <td>{{ user.city }}</td>
+    </tr>
 </table>
 <br>
 <div align="center">
+    <a href="{{ url_for('change_password', id=user.id) }}" class="btn btn-primary" align="center">Change password</a>
     <a href="{{ url_for('edit_profile', id=user.id) }}" class="btn btn-primary" align="center">Edit profile</a>
 </div>
 <br>
