@@ -18,6 +18,7 @@ from utils.records import calculate_usual_worktime, calculate_overtime, calculat
     calculate_extended_salary, process_record, delete_record
 from utils.jinja_filters import int_to_month, int_to_hour, timedelta_to_hour
 
+
 app = Flask(__name__)
 Bootstrap(app)
 
@@ -266,9 +267,11 @@ def user_shifts_print(id):
 @app.route('/user-profile/print-salary-<id>.pdf')
 @requires_roles('user', 'admin')
 def user_salary_print(id):
-    return render_template("user-salary-print.html", save=False, download=False, user=get_user_profile(User, id),
+    return render_template("user-salary-print.html", user=get_user_profile(User, id),
                            salary=calculate_basic_salary(get_user_records(Record, get_user_profile(User, id))),
-                           extened_salary=calculate_extended_salary(get_user_records(Record, get_user_profile(User, id))))
+                           extened_salary=calculate_extended_salary(
+                               get_user_records(Record, get_user_profile(User, id))))
+
 
 if __name__ == "__main__":
     app.run(debug=True)

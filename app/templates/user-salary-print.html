@@ -1,24 +1,26 @@
 {% extends "bootstrap/base.html" %}
 
+{% block title %}Salary  - {{ user.name }} {{ user.surname }}{% endblock %}
+
 {% block content %}
 
-
 <div align="center">
-        {% block title %}<h2><u>Salary</u></h2>{% endblock %}
+    <h2><u>Salary</u></h2>
+    <h4>generated <script>document.write(new Date().toLocaleString())</script></h4>
 </div>
 
 <br>
 <br>
 
-<div align="right" style="margin-right: 47%">
+<div align="left" style="margin-right: 60%">
     <table class="table" style="width: auto;  margin: auto;">
         <tr>
             <td><b>Name</b></td>
-            <td>{{ user.name}}</td>
+            <td>{{ user.name }}</td>
         </tr>
         <tr>
             <td><b>Surname</b></td>
-            <td>{{ user.surname}}</td>
+            <td>{{ user.surname }}</td>
         </tr>
     </table>
 </div>
@@ -54,7 +56,7 @@
 
 <br>
 <br>
-<div align="right" style="margin-right: 20%">
+<div align="right" style="margin-left: 20%">
     <b>Date and signature:</b> .............................
     <br>
 <b>Supervisor signature:</b> ..............................
