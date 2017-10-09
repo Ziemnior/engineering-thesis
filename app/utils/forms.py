@@ -40,7 +40,6 @@ class EditForm(FlaskForm):
     name = StringField('Name')
     surname = StringField('Surname')
     role = RadioField("Check role:", choices=[('user', "Regular user"), ('admin', "Admin")])
-    user_id = QuerySelectField('Select user card', query_factory=get_unregistered_id, allow_blank=True)
     phone_number = TelField('Telephone number')
     address = StringField('Address')
     postal_code = IntegerField('Postal code(without hyphen)', validators=[Optional()])

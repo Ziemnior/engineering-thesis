@@ -21,6 +21,9 @@
     </tr>
     {% endfor %}
 </table>
+<div class="text-center">
+    <a href="{{ url_for('onsite') }}" class="btn btn-warning">People currently at work</a>
+</div>
 {% else %}
 No users to display.
 {% endif %}

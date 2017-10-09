@@ -1,16 +1,18 @@
 {% extends "bootstrap/base.html" %}
 
+{% block title %}Shifts  - {{ user.name }} {{ user.surname }}{% endblock %}
+
 {% block content %}
 
-
 <div align="center">
-        {% block title %}<h2><u>Shifts</u></h2>{% endblock %}
+    <h2><u>Shifts</u></h2>
+    <h4>generated <script>document.write(new Date().toLocaleString())</script></h4>
 </div>
 
 <br>
 <br>
 
-<div align="right" style="margin-right: 25%">
+<div align="left" style="margin-right: 60%">
     <table class="table" style="width: auto;  margin: auto;">
         <tr>
             <td><b>Name</b></td>
@@ -27,7 +29,6 @@
     </table>
 </div>
 
-<br>
 <br>
 
 {% if work_time !={} %}
@@ -52,7 +53,7 @@
 
 <br>
 <br>
-<div align="right" style="margin-right: 30%">
+<div align="right" style="margin-left: 45%">
     <b>Date and signature:</b> .............................
     <br>
 <b>Supervisor signature:</b> ..............................

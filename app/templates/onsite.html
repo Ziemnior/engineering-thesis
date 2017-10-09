@@ -1,14 +1,14 @@
 {% extends "base.html" %}
 {% from "_formhelpers.html" import render_field %}
 
-{% block title %} People currently on site{{ super() }} {% endblock %}
+{% block title %} Pepole currently at work{{ super() }} {% endblock %}
 
 {% block content %}
 
 {% if people != [] %}
 <table class="table">
     <tr>
-        <th>Pepole currently on site</th>
+        <th>Pepole currently at work</th>
     </tr>
     {% for human in people %}
     <tr>
