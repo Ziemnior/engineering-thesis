@@ -6,16 +6,19 @@
 {% block content %}
 
 <body>
-	<p> {{ error }} </p>
-	<div class="panel panel-default col-sm-4"> 
-		<div class="panel-heading row">Login</div>
-		<div class="panel-body row">
-			<form action="/login" method="POST" align="center">
-			{{ form.csrf_token }}
-			{{ render_field(form.email) }}
-			{{ render_field(form.password) }}
-			</div>	
-			<div class="panel-footer row"><input type="submit" value="Login"></div>
-			</form>
-	</div>
+<p> {{ error }} </p>
+<div class="col-sm-offset-4 col-sm-4 text-center">
+        <h3 class="form-signin-heading">Please Sign In</h3>
+        <br>
+        <form action="/login" method="POST" align="center">
+            {{ form.csrf_token }}
+            {{ render_field(form.email) }}
+            {{ render_field(form.password) }}
+
+            <button class="btn btn-lg btn-primary btn-block" name="Submit" value="Login" type="Submit">Login</button>
+            <br>
+        </form>
+</div>
+</body>
+
 {% endblock %}
