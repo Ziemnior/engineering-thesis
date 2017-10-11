@@ -21,16 +21,20 @@
                     <a class="navbar-brand" href="/">Worktime control</a>
                 </div>
                 <!-- Collect the nav links, forms, and other content for toggling -->
+                {% if current_user.role == 'admin' %}
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                     <ul class="nav navbar-nav">
                         <li><a href="/sensor">Sensors</a></li>
                         <li><a href="/user">Users</a></li>
                     </ul>
+                {% endif %}
                     <ul class="nav navbar-nav navbar-right">
                         {% if current_user.is_anonymous %}
                         <li><a href="/login"><span class="glyphicon glyphicon-log-in"></span> Log in</a></li>
                         {% elif current_user.is_authenticated %}
+                        {% if current_user.role == 'admin' %}
                         <li><a href="/register"><span class="glyphicon glyphicon-user"></span> Register new user</a></li>
+                        {% endif %}
                         <li><p class="navbar-text navbar-left">Welcome, <a href="/user-profile/{{ current_user.id }}"
                                                                   class="navbar-link">{{
                             current_user.name }} {{ current_user.surname

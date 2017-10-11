@@ -29,7 +29,9 @@
                 {{ render_field(form.city) }}
 
                 <div align="right">
+                    {% if current_user.role == 'admin' %}
                     <a href="{{ url_for('delete_profile', id=user.id) }}" class="btn btn-danger">Delete account</a>
+                    {% endif %}
                     <input class="btn btn-default" type="submit" value="Save changes">
             </form>
 

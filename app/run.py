@@ -144,7 +144,7 @@ def addsensor():
             else:
                 flash("Sensor ID already registered in database", "error")
         return redirect(url_for('sensors'))
-    return render_template("addsensor.html", form=form)
+    return render_template("sensor-add.html", form=form)
 
 
 @app.route("/sensor", methods=["GET", "POST"])
