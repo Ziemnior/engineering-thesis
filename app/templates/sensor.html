@@ -28,8 +28,6 @@
     </div>
 </div>
 
-<a href="{{ url_for('addsensor') }}" class="btn btn-primary">Add sensor</a>
-
 <h4>Registered sensors</h4>
 
 {% if sensors !=[] %}
@@ -57,5 +55,7 @@
 No registered sensors yet.
 
 {% endif %}
+
+<p class="text-center"><a href="{{ url_for('addsensor') }}" class="btn btn-primary">Add sensor</a></p>
 
 {% endblock %}

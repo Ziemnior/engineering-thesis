@@ -25,7 +25,9 @@
         <td>{{ record.user_id }}</td>
         <td>{{ record.sensor_id }}</td>
         <td>{{ record.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+        {% if current_user.role == 'admin' %}
         <td><a href="{{ url_for('delete_records', record_id=record.id, id=user.id) }}">X</a>
+        {% endif %}
         </td>
     </tr>
     {% endfor %}
