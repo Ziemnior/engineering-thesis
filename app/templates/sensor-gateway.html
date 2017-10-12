@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% from "_formhelpers.html" import render_field %}
+
+
+{% block title %} Gateway sensors{{ super() }} {% endblock %}
+
+{% block content %}
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-offset-3 col-sm-6">
+            <h4>Sensors registered for <b style="color: grey">{{ gateway_id }}</b> (Total: {{ sensors|length }})</h4>
+            <br>
+
+            {% if sensors !=[] %}
+            <table class="table">
+                <tr>
+                    {% for sensor in sensors %}
+                    <td>Place: <b>{{ sensor.place_id}}</b>, Sensor: <b>{{ sensor.sensor_id }} </b></td>
+                    <td><a href="{{ url_for('delete_sensors', sensor_id=sensor.sensor_id) }}">X</a>
+                </tr>
+                {% endfor %}
+            </table>
+
+            {% else %}
+
+            No sensors for this gateway yet.
+
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<p class="text-center"><a href="{{ url_for('delete_gateways', gateway_id=gateway_id) }}" class="btn btn-danger">Delete
+    gateway</a></p>
+
+{% include "footer.html" %}
+
+{% endblock %}

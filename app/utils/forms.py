@@ -47,6 +47,7 @@ class EditForm(FlaskForm):
 
 
 class AddSensorForm(FlaskForm):
+    sensor_gateway = StringField("Sensor gateway", validators=[InputRequired(message="Enter sensor gateway")])
     sensor_place = StringField('Sensor place', validators=[InputRequired(message="Enter sensor place")])
     sensor_id = StringField('Sensor ID', validators=[InputRequired(message="Enter sensor ID")])
 

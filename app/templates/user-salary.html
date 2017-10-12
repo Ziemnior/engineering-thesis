@@ -9,8 +9,9 @@
 {% include "user-profile-nav.html" %}
 {% endwith %}
 
-<h4>User salary  <a href="{{ url_for('user_salary_print', id=user.id) }}"
-                                                      class="btn btn-primary" align="center">Download PDF</a></h4>
+<h4>User salary
+<a href="{{ url_for('user_salary_print', id=user.id) }}"
+                                                      class="btn btn-primary btn-xs">Printable version</a></h4>
 
 <br>
 
@@ -50,6 +51,8 @@
 Nothing to show.
 
 {% endif %}
+
+{% include "footer.html" %}
 
 {% endblock %}
 

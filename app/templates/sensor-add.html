@@ -13,6 +13,7 @@
         <div class="col-sm-4">
             <form action="/addsensor" method="post">
                 {{ form.csrf_token }}
+                {{ render_field(form.sensor_gateway) }}
                 {{ render_field(form.sensor_place) }}
                 {{ render_field(form.sensor_id) }}
                 <div align="right">
@@ -26,5 +27,7 @@
         </div>
     </div>
 </div>
+
+{% include "footer.html" %}
 
 {% endblock %}
