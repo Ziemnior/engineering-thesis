@@ -30,7 +30,6 @@
             {% endif %}
         </div>
     </div>
-</div>
 
 <p class="text-center"><a href="{{ url_for('delete_gateways', gateway_id=gateway_id) }}" class="btn btn-danger">Delete
     gateway</a></p>
@@ -49,8 +48,8 @@
             <tr>
                 <th>User ID</th>
                 <th>Sensor ID</th>
-                <th>Timestamp</th>
                 <th>If card registered</th>
+                <th>Timestamp</th>
                 <th></th>
             </tr>
             <tr>
@@ -76,6 +75,7 @@
         {% endif %}
 
     </div>
+</div>
 </div>
 
 {% include "footer.html" %}
