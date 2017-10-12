@@ -35,6 +35,49 @@
 <p class="text-center"><a href="{{ url_for('delete_gateways', gateway_id=gateway_id) }}" class="btn btn-danger">Delete
     gateway</a></p>
 
+<br>
+<br>
+
+<div class="row">
+    <div class="col-sm-offset-3 col-sm-6">
+
+        <h4>All records for this gateway (Total: {{ records|length }})</h4>
+
+        {% if records !=[] %}
+
+        <table class="table">
+            <tr>
+                <th>User ID</th>
+                <th>Sensor ID</th>
+                <th>Timestamp</th>
+                <th>If card registered</th>
+                <th></th>
+            </tr>
+            <tr>
+                {% for record in records %}
+                <td>{{ record.user_id }}</td>
+                <td>{{ record.sensor_id }}</td>
+                {% if record.in_use == 1 %}
+                <td>True</td>
+                {% else %}
+                <td>False</td>
+                {% endif %}
+                <td>{{ record.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                <td><a href="{{ url_for('delete_records_gateway', record_id=record.id, gateway_id=gateway_id) }}">X</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        {% else %}
+
+        No records for this gateway yet.
+
+        {% endif %}
+
+    </div>
+</div>
+
 {% include "footer.html" %}
 
 {% endblock %}

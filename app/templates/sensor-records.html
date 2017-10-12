@@ -33,36 +33,44 @@
 <br>
 <br>
 
-{% if records !=[] %}
+<div class="row">
+    <div class="col-sm-offset-3 col-sm-6">
 
-<table class="table">
-    <tr>
-        <th>User ID</th>
-        <th>Timestamp</th>
-        <th>If card registered</th>
-        <th></th>
-    </tr>
-    <tr>
-        {% for record in records %}
-        <td>{{ record.user_id }}</td>
-        <td>{{ record.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</td>
-        {% if record.in_use == 1 %}
-        <td>True</td>
+        {% if records !=[] %}
+
+        <table class="table">
+            <tr>
+                <th>User ID</th>
+                <th>Timestamp</th>
+                <th>If card registered</th>
+                <th></th>
+            </tr>
+            <tr>
+                {% for record in records %}
+                <td>{{ record.user_id }}</td>
+                <td>{{ record.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                {% if record.in_use == 1 %}
+                <td>True</td>
+                {% else %}
+                <td>False</td>
+                {% endif %}
+                <td><a href="{{ url_for('delete_records_sensor_view', record_id=record.id, sensor_id=sensor_id) }}">X</a></td>
+            </tr>
+            {% endfor %}
+        </table>
+
         {% else %}
-        <td>False</td>
+
+        No records for this sensor yet.
+
         {% endif %}
-        <td><a href="{{ url_for('delete_records_sensor_view', record_id=record.id, sensor_id=sensor_id) }}">X</a>
-    </tr>
-    {% endfor %}
-</table>
 
-{% else %}
+    </div>
+</div>
+<br>
 
-No records for this sensor yet.
-
-{% endif %}
-
-<p class="text-center"><a href="{{ url_for('delete_sensors', sensor_id=sensor_id) }}" class="btn btn-danger">Delete sensor</a></p>
+<p class="text-center"><a href="{{ url_for('delete_sensors', sensor_id=sensor_id) }}" class="btn btn-danger">Delete
+    sensor</a></p>
 
 {% include "footer.html" %}
 
