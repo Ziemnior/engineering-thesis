@@ -9,33 +9,37 @@
 {% include "user-profile-nav.html" %}
 {% endwith %}
 
-<h4>Last 10 records for <b style="color: grey">{{ user.name }} {{ user.surname }}</b> (Total: <a
-        href="{{ url_for('user_records_all', id=user.id) }}"> {{ records|length }}</a>)</h4>
+<div class="row">
+    <div class="col-sm-offset-3 col-sm-6">
+        <br>
+        <h4>Last 10 records for <b style="color: grey">{{ user.name }} {{ user.surname }}</b> (Total: <a
+                href="{{ url_for('user_records_all', id=user.id) }}"> {{ records|length }}</a>)</h4>
 
-{% if records !=[] %}
+        {% if records !=[] %}
 
-<table class="table">
-    <tr>
-        <th>User ID</th>
-        <th>Sensor ID</th>
-        <th>Timestamp</th>
-    </tr>
-    <tr>
-        {% for record in records[:10] %}
-        <td>{{ record.user_id }}</td>
-        <td>{{ record.sensor_id }}</td>
-        <td>{{ record.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</td>
-    </tr>
-    {% endfor %}
+        <table class="table">
+            <tr>
+                <th>User ID</th>
+                <th>Sensor ID</th>
+                <th>Timestamp</th>
+            </tr>
+            <tr>
+                {% for record in records[:10] %}
+                <td>{{ record.user_id }}</td>
+                <td>{{ record.sensor_id }}</td>
+                <td>{{ record.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+            </tr>
+            {% endfor %}
+        </table>
 
-</table>
+        {% else %}
 
-{% else %}
+        No records for this sensor yet.
 
-No records for this sensor yet.
+        {% endif %}
 
-{% endif %}
-
+    </div>
+</div>
 {% include "footer.html" %}
 
 {% endblock %}
