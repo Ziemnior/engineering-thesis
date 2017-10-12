@@ -4,23 +4,28 @@
 {% block title %} Pepole currently at work{{ super() }} {% endblock %}
 
 {% block content %}
+<div class="row">
+    <div class="col-sm-offset-3 col-sm-6">
 
-{% if people != [] %}
-<table class="table">
-    <tr>
-        <th>Pepole currently at work</th>
-    </tr>
-    {% for human in people %}
-    <tr>
-        <td> {{ human }}</td>
-    </tr>
-    {% endfor %}
-</table>
-{% else %}
+        {% if people != [] %}
+        <table class="table">
+            <tr>
+                <th>Pepole currently at work</th>
+            </tr>
+            {% for human in people %}
+            <tr>
+                <td> {{ human }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        {% else %}
 
-No one is at work currently.
+        No one is at work currently.
 
-{% endif %}
+        {% endif %}
+
+    </div>
+</div>
 
 {% include "footer.html" %}
 

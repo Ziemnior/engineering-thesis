@@ -4,7 +4,8 @@
 {% block title %}Users{{ super() }}{% endblock %}
 
 {% block content %}
-
+<div class="row">
+<div class="col-sm-offset-3 col-sm-6">
 {% if users != [] %}
 <table class="table">
     <tr>
@@ -30,6 +31,8 @@ No users to display.
 
 {% endif %}
 
+</div>
+</div>
 {% include "footer.html" %}
 
 {% endblock %}
