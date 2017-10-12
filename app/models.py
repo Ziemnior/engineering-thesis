@@ -9,6 +9,8 @@ class Record(Base):
     id = Column(Integer, primary_key=True)
     sensor_id = Column(String, ForeignKey('sensors.id'))
     sensor = relationship("Sensor", back_populates="records")
+    gateway = relationship("Sensor", back_populates="records")
+    gateway_id = Column(String)
     user_id = Column(String)
     timestamp = Column(DateTime)
     is_registered = Column(Boolean)
@@ -23,10 +25,11 @@ class Sensor(Base):
     id = Column(Integer, primary_key=True)
     place_id = Column(String)
     sensor_id = Column(String, unique=True)
+    gateway_id = Column(String, unique=True)
     records = relationship("Record", order_by=Record.id, back_populates="sensor")
 
     def __repr__(self):
-        return "<Sensor(id={}, place_id={}, sensor_id={})>".format(self.id, self.place_id, self.sensor_id)
+        return "<Sensor(id={}, place_id={}, sensor_id={}, gateway_id={})>".format(self.id, self.place_id, self.sensor_id, self.gateway_id)
 
 
 class User(Base, UserMixin):

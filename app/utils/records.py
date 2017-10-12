@@ -11,7 +11,8 @@ def process_record(record, user, sensor, request, response, if_sensor_registered
     print(data)
     print(type(data))
     with create_session() as session:
-        record = record(sensor_id=data["sensor_id"],
+        record = record(gateway_id=data["gateway_id"],
+                        sensor_id=data["sensor_id"],
                         user_id=data["user_id"],
                         is_registered=if_sensor_registered(data, session, sensor),
                         in_use=if_uid_registered(data, session, user),

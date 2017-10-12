@@ -10,7 +10,7 @@
 {% endwith %}
 
 <h4>User shifts (Total: {{ work_time|length }}</a>) <a href="{{ url_for('user_shifts_print', id=user.id) }}"
-                                                      class="btn btn-primary" align="center">Download PDF</a></h4>
+                                                      class="btn btn-primary btn-xs">Printable version</a></h4>
 
 <br>
 <br>
@@ -44,6 +44,8 @@
 No shifts registered for this user yet.
 
 {% endif %}
+
+{% include "footer.html" %}
 
 {% endblock %}
 

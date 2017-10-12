@@ -16,7 +16,7 @@
                 {{ render_field(filter_form.place_name) }}
                 <div align="right">
                     {% if flag == 1 %}
-                    <a href="{{ url_for('sensors') }}" class="btn btn-primary" align="left">Clear filter</a>
+                    <a href="{{ url_for('sensors') }}" class="btn btn-warning" align="left">Clear filter</a>
                     {% endif %}
                     <input class="btn btn-default" type="submit" value="Apply filter">
                 </div>
@@ -28,6 +28,9 @@
     </div>
 </div>
 
+<div class="row">
+<div class="col-sm-offset-3 col-sm-6">
+
 <h4>Registered sensors</h4>
 
 {% if sensors !=[] %}
@@ -36,18 +39,18 @@
     <tr>
         <th>Place</th>
         <th>Sensor ID</th>
+        <th>Gateway ID</th>
     </tr>
 
     {% for key, sensor in sensors.items() %}
 
     <tr>
-        <td> {{ sensor.place_id }}</td>
+        <td> {{ sensor.place_id }} </td>
         <td><a href="/sensor/{{ sensor.sensor_id }}">{{ sensor.sensor_id }}</a></td>
-
+        <td><a href="/sensor/gateway/{{ sensor.gateway_id }}"> {{ sensor.gateway_id }} </a></td>
     </tr>
 
     {% endfor %}
-
 </table>
 
 {% else %}
@@ -55,7 +58,12 @@
 No registered sensors yet.
 
 {% endif %}
+</div>
+</div>
 
 <p class="text-center"><a href="{{ url_for('addsensor') }}" class="btn btn-primary">Add sensor</a></p>
 
+{% include "footer.html" %}
+
 {% endblock %}
+

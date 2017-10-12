@@ -13,11 +13,10 @@ from utils.register import check_existing_uids, check_if_user_exists, if_sensor_
     if_uid_registered, update_uid_status
 from utils.users import get_people_on_site, get_user_profile, get_users, get_user_records, delete_user
 from utils.sensors import check_if_sensor_id_exists, display_registered_sensors, filter_sensors, \
-    get_sensor_specific_records, filter_records_by_status, delete_sensor
+    get_sensor_specific_records, filter_records_by_status, delete_sensor, delete_gateway
 from utils.records import calculate_usual_worktime, calculate_overtime, calculate_basic_salary, \
     calculate_extended_salary, process_record, delete_record
 from utils.jinja_filters import int_to_month, int_to_hour, timedelta_to_hour
-
 
 app = Flask(__name__)
 Bootstrap(app)
@@ -137,7 +136,8 @@ def addsensor():
     if form.validate_on_submit():
         with create_session() as session:
             if not check_if_sensor_id_exists(form, session, Sensor):
-                sensor = Sensor(place_id=form.sensor_place.data, sensor_id=form.sensor_id.data)
+                sensor = Sensor(place_id=form.sensor_place.data, sensor_id=form.sensor_id.data,
+                                gateway_id=form.sensor_gateway.data)
                 session.add(sensor)
                 update_record_status(form, session, Record)
                 flash("Sensor added successfully", "success")
@@ -156,8 +156,8 @@ def sensors():
 @app.route("/sensor/filter", methods=["GET", "POST"])
 @requires_roles('admin')
 def sensor_filter():
-    return render_template("sensor.html", sensors=filter_sensors(filter_form, Sensor), filter_form=FilterSensorForm(),
-                           flag=1)
+    return render_template("sensor.html", sensors=filter_sensors(FilterSensorForm(), Sensor),
+                           filter_form=FilterSensorForm(), flag=1)
 
 
 @app.route("/sensor/<sensor_id>", methods=["GET", "POST"])
@@ -173,6 +173,22 @@ def sensor_records_filter(sensor_id):
     form = FilterSensorStatusForm()
     return render_template("sensor-records.html", form=form, records=filter_records_by_status(Record, sensor_id, form),
                            sensor_id=sensor_id, flag=1)
+
+
+@app.route("/sensor/gateway/<gateway_id>", methods=["GET", "POST"])
+@requires_roles('admin')
+def sensor_display_gateway(gateway_id):
+    with create_session() as session:
+        temp = session.query(Sensor).filter_by(gateway_id=gateway_id).order_by(Sensor.place_id.asc()).all()
+    return render_template("sensor-gateway.html", sensors=temp, gateway_id=gateway_id)
+
+
+@app.route("/sensor/gateway/<gateway_id>/delete", methods=["GET", "POST"])
+@requires_roles('admin')
+def delete_gateways(gateway_id):
+    delete_gateway(Sensor, gateway_id)
+    flash("Gateway " + gateway_id + " successfully removed", "info")
+    return redirect(url_for('sensors'))
 
 
 @app.route("/sensor/<sensor_id>/delete", methods=["GET", "POST"])
@@ -256,7 +272,7 @@ def delete_records(id, record_id):
     return redirect(url_for('user_profile', id=id))
 
 
-@app.route('/user-profile/print-shifts-<id>.pdf')
+@app.route('/user-profile/print-shifts-<id>')
 @requires_roles('user', 'admin')
 def user_shifts_print(id):
     return render_template("user-shifts-print.html", user=get_user_profile(User, id),
@@ -264,7 +280,7 @@ def user_shifts_print(id):
                            overtime=calculate_overtime(get_user_records(Record, get_user_profile(User, id))))
 
 
-@app.route('/user-profile/print-salary-<id>.pdf')
+@app.route('/user-profile/print-salary-<id>')
 @requires_roles('user', 'admin')
 def user_salary_print(id):
     return render_template("user-salary-print.html", user=get_user_profile(User, id),
