@@ -29,7 +29,8 @@ class Sensor(Base):
     records = relationship("Record", order_by=Record.id, back_populates="sensor")
 
     def __repr__(self):
-        return "<Sensor(id={}, place_id={}, sensor_id={}, gateway_id={})>".format(self.id, self.place_id, self.sensor_id, self.gateway_id)
+        return "<Sensor(id={}, place_id={}, sensor_id={}, gateway_id={})>".format(self.id, self.place_id,
+                                                                                  self.sensor_id, self.gateway_id)
 
 
 class User(Base, UserMixin):
