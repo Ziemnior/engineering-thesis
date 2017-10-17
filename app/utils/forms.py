@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, RadioField, IntegerField
-from wtforms.validators import InputRequired, Email, Length, EqualTo, Optional
+from wtforms import StringField, PasswordField, RadioField, IntegerField, BooleanField
+from wtforms.validators import InputRequired, Email, Length, EqualTo, Optional, NumberRange
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
 from database import create_session
 from models import Record, User
@@ -66,3 +66,15 @@ class ChangePasswordForm(FlaskForm):
                              validators=[EqualTo('confirm_password', message="Passwords don't match"),
                                          Length(message="Password must be at least 4 characters long.", min=4)])
     confirm_password = PasswordField("Confirm new password")
+
+
+class SettingsForm(FlaskForm):
+    enable_worktime = BooleanField('Enable overtime')
+    lower_boundary = IntegerField('Lower boundary', validators=[InputRequired(message="Set lower work time boundary"),
+                                                                NumberRange(
+                                                                    message='Provide value in range between 0 and 23',
+                                                                    min=0, max=23)])
+    upper_boundary = IntegerField('Upper boundary', validators=[InputRequired(message="Set upper work time boundary"),
+                                                                NumberRange(
+                                                                    message='Provide value in range between 0 and 23',
+                                                                    min=0, max=23)])

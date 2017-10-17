@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% from "_formhelpers.html" import render_field %}
+
+{% block title %} Settings{{ super() }} {% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <br/>
+    <br/>
+    <div class="row">
+        <div class="col-sm-4"></div>
+        <div class="col-sm-4">
+        <h4>Settings</h4>
+            <table class="table">
+            <tr>
+                <td>Enabled overtime</td>
+                <td>{{ settings.overtime.enable }}</td>
+            </tr>
+            <tr>
+                <td>Lower work time boundary</td>
+                <td>{{ settings.worktime.lower_boundary }}</td>
+            </tr>
+            <tr>
+                <td>Upper work time boundary</td>
+                <td>{{ settings.worktime.upper_boundary }}</td>
+            </tr>
+            </table>
+            <br>
+            <div align="center">
+                <a href="{{ url_for('settings_edit') }}" class="btn btn-primary" align="center">Edit settings</a>
+            </div>
+            <div class="col-sm-4"></div>
+            <div class="col-sm-4">
+            </div>
+        </div>
+    </div>
+
+{% include "footer.html" %}
+{% endblock %}

@@ -6,7 +6,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from database import init_db, create_session
 from models import Record, Sensor, User
 from utils.forms import AddSensorForm, LoginForm, RegisterForm, EditForm, FilterSensorForm, FilterSensorStatusForm, \
-    ChangePasswordForm
+    ChangePasswordForm, SettingsForm
 from utils.roles import requires_roles
 from utils.create_admin import create_admin_account
 from utils.register import check_existing_uids, check_if_user_exists, if_sensor_registered, update_record_status, \
@@ -18,6 +18,8 @@ from utils.sensors import check_if_sensor_id_exists, display_registered_sensors,
 from utils.records import calculate_usual_worktime, calculate_overtime, calculate_basic_salary, \
     calculate_extended_salary, process_record, delete_record
 from utils.jinja_filters import int_to_month, int_to_hour, timedelta_to_hour
+from utils.settings import print_config, update_config
+
 
 app = Flask(__name__)
 Bootstrap(app)
@@ -296,6 +298,22 @@ def user_salary_print(id):
                            extened_salary=calculate_extended_salary(
                                get_user_records(Record, get_user_profile(User, id))))
 
+
+@app.route('/settings', methods=["GET", "POST"])
+@requires_roles('admin')
+def settings_print():
+    return render_template("settings-print.html", settings=print_config())
+
+
+@app.route('/settings-edit', methods=["GET", "POST"])
+@requires_roles('admin')
+def settings_edit():
+    form = SettingsForm()
+    if form.validate_on_submit():
+        update_config(form)
+        flash("Settings updated successfully", "success")
+        return redirect(url_for('settings_print'))
+    return render_template('settings-edit.html', form=form)
 
 if __name__ == "__main__":
     app.run(debug=True)
