@@ -6,7 +6,9 @@
 
 <div align="center">
     <h2><u>Salary</u></h2>
-    <h4>generated <script>document.write(new Date().toLocaleString())</script></h4>
+    <h4>generated
+        <script>document.write(new Date().toLocaleString())</script>
+    </h4>
 </div>
 
 <br>
@@ -44,12 +46,13 @@
         {% for key, value in salary.items() %}
         <td>{{ key[0]|int_to_month }} {{ key[1] }}</td>
         <td>{{ value|int }} ({{ value|int_to_hour }}) hours</td>
-        <td>{{ extened_salary[key]|int }} ({{ extened_salary[key]|int_to_hour }}) hours</td>
-        <td>{{ (value|int)*10 }} PLN</td>
-        <td>{{ (extened_salary[key]|int) * 20 }} PLN</td>
-        <td>{{ (value|int) + (extened_salary[key])|int }} hours</td>
-        <td>{{ ((value|int)*10) + ((extened_salary[key]|int) * 20) }} PLN
-        </td>
+        <td>{{ extened_salary[key]|int * overtime_status|int }} ({{ extened_salary[key]|int_to_hour *
+            overtime_status|int }}) hours</td>
+        <td>{{ (value|int) * base_rate|int }} {{ currency }}</td>
+        <td>{{ (extened_salary[key]|int) * extended_rate|int * overtime_status|int }} {{ currency }}</td>
+        <td>{{ (value|int) + (extened_salary[key])|int * overtime_status|int}} hours</td>
+        <td>{{ ((value|int) * base_rate|int) + ((extened_salary[key]|int) * extended_rate|int * overtime_status|int) }}
+            {{ currency }}</td>
     </tr>
     {% endfor %}
 </table>
@@ -59,7 +62,7 @@
 <div align="right" style="margin-left: 20%">
     <b>Date and signature:</b> .............................
     <br>
-<b>Supervisor signature:</b> ..............................
+    <b>Supervisor signature:</b> ..............................
 </div>
 
 {% else %}

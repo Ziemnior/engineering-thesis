@@ -10,9 +10,8 @@
 {% endwith %}
 
 <h4>User salary
-<a href="{{ url_for('user_salary_print', id=user.id) }}"
-                                                      class="btn btn-primary btn-xs">Printable version</a></h4>
-
+    <a href="{{ url_for('user_salary_print', id=user.id) }}"
+       class="btn btn-primary btn-xs">Printable version</a></h4>
 <br>
 
 {% include "salary-chart.html" %}
@@ -35,12 +34,13 @@
         {% for key, value in salary.items() %}
         <td>{{ key[0]|int_to_month }} {{ key[1] }}</td>
         <td>{{ value|int }} ({{ value|int_to_hour }}) hours</td>
-        <td>{{ extened_salary[key]|int }} ({{ extened_salary[key]|int_to_hour }}) hours</td>
-        <td>{{ (value|int)*10 }} PLN</td>
-        <td>{{ (extened_salary[key]|int) * 20 }} PLN</td>
-        <td>{{ (value|int) + (extened_salary[key])|int }} hours</td>
-        <td>{{ ((value|int)*10) + ((extened_salary[key]|int) * 20) }} PLN
-        </td>
+        <td>{{ extened_salary[key]|int * overtime_status|int }} ({{ extened_salary[key]|int_to_hour *
+            overtime_status|int }}) hours</td>
+        <td>{{ (value|int) * base_rate|int }} {{ currency }}</td>
+        <td>{{ (extened_salary[key]|int) * extended_rate|int * overtime_status|int }} {{ currency }}</td>
+        <td>{{ (value|int) + (extened_salary[key])|int * overtime_status|int}} hours</td>
+        <td>{{ ((value|int) * base_rate|int) + ((extened_salary[key]|int) * extended_rate|int * overtime_status|int) }}
+            {{ currency }}</td>
     </tr>
     {% endfor %}
 

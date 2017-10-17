@@ -45,7 +45,7 @@
         <td>{{ elem[2].strftime('%Y-%m-%d %H:%M:%S') }}</td>
         <td>{{ elem[1].strftime('%Y-%m-%d %H:%M:%S') }}</td>
         <td>{{ elem[0] }}</td>
-        <td>{{ overtime[key][0] }}</td>
+        <td>{{ overtime[key][0] * overtime_status|int}}</td>
     </tr>
     {% endfor %}
 

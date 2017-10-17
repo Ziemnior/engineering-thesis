@@ -11,12 +11,6 @@ class BusinessHours:
         self.datetime2 = datetime2
         self.day_minutes = (self.worktiming[1] - self.worktiming[0]) * 3600
 
-    def get_worktime(self):
-        return self.worktiming
-
-    def set_worktime(self):
-        self.worktiming = read_worktime_hours()
-
     def get_days(self):
         """
         Return the difference in days.
@@ -43,8 +37,7 @@ class BusinessHours:
         return int(self.get_seconds() / 60)
 
     def get_seconds(self):
-        self.get_worktime()
-        self.set_worktime()
+
         """
         Return the difference in minutes.
         """

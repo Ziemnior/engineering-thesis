@@ -18,8 +18,8 @@ from utils.sensors import check_if_sensor_id_exists, display_registered_sensors,
 from utils.records import calculate_usual_worktime, calculate_overtime, calculate_basic_salary, \
     calculate_extended_salary, process_record, delete_record
 from utils.jinja_filters import int_to_month, int_to_hour, timedelta_to_hour
-from utils.settings import print_config, update_config
-
+from utils.settings import print_config, update_config, read_overtime_status, read_currency, read_base_hour_rate, \
+    read_extended_hour_rate
 
 app = Flask(__name__)
 Bootstrap(app)
@@ -254,7 +254,8 @@ def user_records_all(id):
 def user_shifts(id):
     return render_template("user-shifts.html", user=get_user_profile(User, id),
                            work_time=calculate_usual_worktime(get_user_records(Record, get_user_profile(User, id))),
-                           overtime=calculate_overtime(get_user_records(Record, get_user_profile(User, id))))
+                           overtime=calculate_overtime(get_user_records(Record, get_user_profile(User, id))),
+                           overtime_status=read_overtime_status())
 
 
 @app.route('/user-profile/<id>/salary')
@@ -263,7 +264,11 @@ def user_salary(id):
     return render_template("user-salary.html", user=get_user_profile(User, id),
                            salary=calculate_basic_salary(get_user_records(Record, get_user_profile(User, id))),
                            extened_salary=calculate_extended_salary(
-                               get_user_records(Record, get_user_profile(User, id))))
+                               get_user_records(Record, get_user_profile(User, id))),
+                           overtime_status=read_overtime_status(),
+                           currency=read_currency(),
+                           base_rate=read_base_hour_rate(),
+                           extended_rate=read_extended_hour_rate())
 
 
 @app.route('/user-profile/<id>/delete', methods=["GET", "POST"])
@@ -287,7 +292,8 @@ def delete_records(id, record_id):
 def user_shifts_print(id):
     return render_template("user-shifts-print.html", user=get_user_profile(User, id),
                            work_time=calculate_usual_worktime(get_user_records(Record, get_user_profile(User, id))),
-                           overtime=calculate_overtime(get_user_records(Record, get_user_profile(User, id))))
+                           overtime=calculate_overtime(get_user_records(Record, get_user_profile(User, id))),
+                           overtime_status=read_overtime_status())
 
 
 @app.route('/user-profile/print-salary-<id>')
@@ -296,7 +302,11 @@ def user_salary_print(id):
     return render_template("user-salary-print.html", user=get_user_profile(User, id),
                            salary=calculate_basic_salary(get_user_records(Record, get_user_profile(User, id))),
                            extened_salary=calculate_extended_salary(
-                               get_user_records(Record, get_user_profile(User, id))))
+                               get_user_records(Record, get_user_profile(User, id))),
+                           overtime_status=read_overtime_status(),
+                           currency=read_currency(),
+                           base_rate=read_base_hour_rate(),
+                           extended_rate=read_extended_hour_rate())
 
 
 @app.route('/settings', methods=["GET", "POST"])
@@ -314,6 +324,7 @@ def settings_edit():
         flash("Settings updated successfully", "success")
         return redirect(url_for('settings_print'))
     return render_template('settings-edit.html', form=form)
+
 
 if __name__ == "__main__":
     app.run(debug=True)

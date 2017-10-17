@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, RadioField, IntegerField, BooleanField
+from wtforms import StringField, PasswordField, RadioField, IntegerField, BooleanField, SelectField
 from wtforms.validators import InputRequired, Email, Length, EqualTo, Optional, NumberRange
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
 from database import create_session
@@ -69,12 +69,15 @@ class ChangePasswordForm(FlaskForm):
 
 
 class SettingsForm(FlaskForm):
-    enable_worktime = BooleanField('Enable overtime')
+    enable_worktime = RadioField('Enable overtime', choices=[("true", "True"), ("false", "False")])
     lower_boundary = IntegerField('Lower boundary', validators=[InputRequired(message="Set lower work time boundary"),
                                                                 NumberRange(
-                                                                    message='Provide value in range between 0 and 23',
+                                                                    message="Provide value in range between 0 and 23",
                                                                     min=0, max=23)])
     upper_boundary = IntegerField('Upper boundary', validators=[InputRequired(message="Set upper work time boundary"),
                                                                 NumberRange(
-                                                                    message='Provide value in range between 0 and 23',
+                                                                    message="Provide value in range between 0 and 23",
                                                                     min=0, max=23)])
+    base_salary = IntegerField('Base salary', validators=[InputRequired(message="Specify base hourly salary")])
+    extended_salary = IntegerField('Extended salary', validators=[InputRequired(message="Specify extended hourly salary")])
+    currency = SelectField('Currency', choices=[('PLN', 'PLN'), ('EUR', 'EUR'), ('USD', "USD")])

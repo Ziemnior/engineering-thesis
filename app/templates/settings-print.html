@@ -11,20 +11,32 @@
     <div class="row">
         <div class="col-sm-4"></div>
         <div class="col-sm-4">
-        <h4>Settings</h4>
+            <h4>Settings</h4>
             <table class="table">
-            <tr>
-                <td>Enabled overtime</td>
-                <td>{{ settings.overtime.enable }}</td>
-            </tr>
-            <tr>
-                <td>Lower work time boundary</td>
-                <td>{{ settings.worktime.lower_boundary }}</td>
-            </tr>
-            <tr>
-                <td>Upper work time boundary</td>
-                <td>{{ settings.worktime.upper_boundary }}</td>
-            </tr>
+                <tr>
+                    <td>Enabled overtime</td>
+                    <td>{{ settings.overtime.enable }}</td>
+                </tr>
+                <tr>
+                    <td>Lower work time boundary</td>
+                    <td>{{ settings.worktime.lower_boundary }}</td>
+                </tr>
+                <tr>
+                    <td>Upper work time boundary</td>
+                    <td>{{ settings.worktime.upper_boundary }}</td>
+                </tr>
+                <tr>
+                    <td>Base hourly salary</td>
+                    <td>{{ settings.salary.base_salary }}</td>
+                </tr>
+                <tr>
+                    <td>Extended hourly salary</td>
+                    <td>{{ settings.salary.extended_salary }}</td>
+                </tr>
+                <tr>
+                    <td>Currency</td>
+                    <td>{{ settings.salary.currency }}</td>
+                </tr>
             </table>
             <br>
             <div align="center">
@@ -36,5 +48,5 @@
         </div>
     </div>
 
-{% include "footer.html" %}
-{% endblock %}
+    {% include "footer.html" %}
+    {% endblock %}

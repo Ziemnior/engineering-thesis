@@ -1,5 +1,7 @@
 from database import create_session
 from utils.businesshours import BusinessHours
+from utils.settings import read_worktime_hours
+
 from datetime import timedelta, datetime
 from collections import Counter
 import json
@@ -40,7 +42,7 @@ def calculate_usual_worktime(user):
     worktime = dict()
     i = 0
     for boundaries in get_workday_boundaries(user):
-        business_time = BusinessHours(boundaries[1].timestamp, boundaries[0].timestamp)
+        business_time = BusinessHours(boundaries[1].timestamp, boundaries[0].timestamp, read_worktime_hours())
         worktime[i] = [timedelta(seconds=(business_time.get_seconds())), boundaries[0].timestamp,
                        boundaries[1].timestamp]
         i += 1
