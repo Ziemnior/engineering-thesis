@@ -17,7 +17,7 @@ def check_config_file():
 def default_config():
     config = configparser.ConfigParser()
     config.add_section('overtime')
-    config.set('overtime', 'enable', 'True')
+    config.set('overtime', 'enable', 'true')
     config.add_section('worktime')
     config.set('worktime', 'lower_boundary', '8')
     config.set('worktime', 'upper_boundary', '16')
@@ -34,7 +34,23 @@ def print_config():
 def update_config(form):
     config = configparser.ConfigParser()
     config.read(CONFIG_FILE)
-    config.set('overtime', 'enable', str(form.enable_worktime.data))
+    config.set('overtime', 'enable', str(form.enable_worktime.data).lower())
     config.set('worktime', 'lower_boundary', str(form.lower_boundary.data))
     config.set('worktime', 'upper_boundary', str(form.upper_boundary.data))
     save_config(config)
+
+
+def read_overtime_status():
+    check_config_file()
+    config = configparser.ConfigParser()
+    config.read(CONFIG_FILE)
+    return config.getboolean('overtime', 'enable')
+
+
+def read_worktime_hours():
+    check_config_file()
+    config = configparser.ConfigParser()
+    config.read(CONFIG_FILE)
+    return [config.getint('worktime', 'lower_boundary'), config.getint('worktime', 'upper_boundary')]
+
+
