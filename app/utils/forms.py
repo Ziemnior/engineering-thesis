@@ -1,10 +1,12 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, RadioField, IntegerField, BooleanField, SelectField
 from wtforms.validators import InputRequired, Email, Length, EqualTo, Optional, NumberRange
+from wtforms.fields.html5 import TelField
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
+
 from database import create_session
 from models import Record, User
-from wtforms.fields.html5 import TelField
+from utils.custom_validators import GreaterThan
 
 
 def get_unregistered_id():
@@ -77,7 +79,10 @@ class SettingsForm(FlaskForm):
     upper_boundary = IntegerField('Upper boundary', validators=[InputRequired(message="Set upper work time boundary"),
                                                                 NumberRange(
                                                                     message="Provide value in range between 0 and 23",
-                                                                    min=0, max=23)])
+                                                                    min=0, max=23),
+                                                                GreaterThan('lower_boundary',
+                                                                'Upper boundary must be bigger than lower boundary')])
     base_salary = IntegerField('Base salary', validators=[InputRequired(message="Specify base hourly salary")])
-    extended_salary = IntegerField('Extended salary', validators=[InputRequired(message="Specify extended hourly salary")])
+    extended_salary = IntegerField('Extended salary',
+                                   validators=[InputRequired(message="Specify extended hourly salary")])
     currency = SelectField('Currency', choices=[('PLN', 'PLN'), ('EUR', 'EUR'), ('USD', "USD")])

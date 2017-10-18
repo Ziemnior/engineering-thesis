@@ -33,6 +33,7 @@
                         <li><a href="/login"><span class="glyphicon glyphicon-log-in"></span> Log in</a></li>
                         {% elif current_user.is_authenticated %}
                         {% if current_user.role == 'admin' %}
+                         <li><a href="/settings"><span class="glyphicon glyphicon-cog"></span> Settings</a></li>
                         <li><a href="/register"><span class="glyphicon glyphicon-user"></span> Register new user</a></li>
                         {% endif %}
                         <li><p class="navbar-text navbar-left">Welcome, <a href="/user-profile/{{ current_user.id }}"
