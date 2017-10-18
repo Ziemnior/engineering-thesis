@@ -24,7 +24,7 @@
             label: 'overtime',
             backgroundColor: "rgba(151,0,205,0.2)",
             data : [{% for key, elem in overtime.items()|reverse %}
-                        {{ elem[0]|timedelta_to_hour }},
+                        {{ elem[0]|timedelta_to_hour * overtime_status|int }},
                     {% endfor %}]
                    }]},
    options: {
