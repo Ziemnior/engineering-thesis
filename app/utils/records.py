@@ -10,8 +10,6 @@ import requests
 
 def process_record(record, user, sensor, request, response, if_sensor_registered, if_uid_registered):
     data = request.json
-    print(data)
-    print(type(data))
     with create_session() as session:
         record = record(gateway_id=data["gateway_id"],
                         sensor_id=data["sensor_id"],
