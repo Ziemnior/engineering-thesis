@@ -55,7 +55,6 @@ class SendData:
         reader = RFIDReader()
  
         while True: 
-            #sleep(5)
             card_readings = reader.read_card()
             client.publish(publishing_topic, card_readings)
  
