@@ -59,9 +59,9 @@ class NetworkConnection:
 
 if __name__ == "__main__":
     parser = OptionParser()
-    parser.add_option('-p', '--prefix', dest='prefix', help="Specify gateway ssid prefix")
-    parser.add_option('-i', '--interface', dest='interface', help="Specify name of wireless interface of choice")
-    parser.add_option('-q', '--password', dest='password',
+    parser.add_option('-p', '--prefix', dest='prefix', default='gateway', help="Specify gateway ssid prefix")
+    parser.add_option('-i', '--interface', dest='interface', default='wlan0', help="Specify name of wireless interface of choice")
+    parser.add_option('-q', '--password', dest='password', default='12345678', 
                       help="Specify password for the wireless network of choice")
     options, args = parser.parse_args()
     wireless_connection = NetworkConnection(prefix=options.prefix, interface=options.interface,

@@ -1,6 +1,9 @@
+#!usr/bin/env python3
+
 import paho.mqtt.client as mqtt
 from read_card import RFIDReader
 from sensor_id import get_sensor_id
+from led import blink_led
 from time import sleep
 import json
  
@@ -16,7 +19,7 @@ class SendData:
     def on_connect(self, client, userdata, flags, result_code):
         subscribed_topic = self.subscribed_topic
         print("Result code: " + str(result_code) + "Connected flags: " + str(flags))
-        client.subscribe(subscribed_topic)
+        client.subscribe(subscribed_topic, qos=2)
         print("Subscribed to: " + subscribed_topic)
  
     def on_disconnect(self, client, userdata, flags, result_code):
@@ -56,7 +59,8 @@ class SendData:
  
         while True: 
             card_readings = reader.read_card()
-            client.publish(publishing_topic, card_readings)
+	    blink_led()
+            client.publish(publishing_topic, card_readings, qos=2)
  
  
 if __name__ == "__main__":
