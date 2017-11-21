@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import paho.mqtt.client as mqtt
 from optparse import OptionParser
 from gateway_id import get_gateway_id
@@ -16,7 +18,7 @@ class CollectData:
  
     def on_connect(self, client, userdata, flags, result_code):
         print("Result code: " + str(result_code) + ", Connected flags: " + str(flags))
-        client.subscribe(self.subscribed_topic)
+        client.subscribe(self.subscribed_topic, qos=2)
         print("Subscribed to: " + self.subscribed_topic)
  
     def on_disconnect(self, client, userdata, flags, result_code):
@@ -26,7 +28,7 @@ class CollectData:
         print(msg.topic + " " + str(msg.payload))
         msg_to_send = json.loads(msg.payload.decode("utf-8"))
 	msg_to_send["gateway_id"] = get_gateway_id()
-        post_message = requests.post('http://192.168.1.80:5000/api/post-record', json=msg_to_send)
+        post_message = requests.post(self.url, json=msg_to_send)
  
     def on_publish(self, client, userdata, mid):
         print("mid: " + str(mid))
@@ -61,7 +63,7 @@ class CollectData:
  
 if __name__ == "__main__":
     parser = OptionParser()
-    parser.add_option('-u', '--url', dest='url', help='Please specify gateway address')
+    parser.add_option('-u', '--url', dest='url', default='http://192.168.1.80:5000/api/post-record', help='Please specify gateway address')
     options, args = parser.parse_args()
  
     collect_data = CollectData(url=options.url)
