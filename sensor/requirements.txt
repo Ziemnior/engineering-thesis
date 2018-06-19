@@ -1,2 +1,4 @@
 wifi
-RPi.GPIO
+RPi.GPIO==0.6.3
+git+git://github.com/mxgxw/MFRC522-python.git
+git+git://github.com/lthiery/SPI-Py.git
