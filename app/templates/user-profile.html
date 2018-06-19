@@ -1,0 +1,52 @@
+{% from "_formhelpers.html" import render_field %}
+{% extends "base.html" %}
+
+{% block title %}User profile{{ super() }}{% endblock %}
+
+{% block content %}
+
+{% with active_page = "profile" %}
+{% include "user-profile-nav.html" %}
+{% endwith %}
+
+<table class="table" style="width: auto ;  margin: 0px auto">
+
+    <tr>
+        <th>First name and last name</th>
+        <th>{{ user.name }} {{ user.surname }}</th>
+    </tr>
+    <tr>
+        <td>User ID</td>
+        <td> {{ user.card_id }}</td>
+    </tr>
+    <tr>
+        <td>Role</td>
+        <td>{{ user.role }}</td>
+    </tr>
+    <tr>
+        <td>Telephone number</td>
+        <td>{{ user.phone_number }}</td>
+    </tr>
+    <tr>
+        <td>Address</td>
+        <td>{{ user.address }}</td>
+    </tr>
+    <tr>
+        <td>Postal code</td>
+        <td>{{ user.postal_code }}</td>
+    </tr>
+    <tr>
+        <td>City</td>
+        <td>{{ user.city }}</td>
+    </tr>
+</table>
+<br>
+<div align="center">
+    <a href="{{ url_for('change_password', id=user.id) }}" class="btn btn-primary" align="center">Change password</a>
+    <a href="{{ url_for('edit_profile', id=user.id) }}" class="btn btn-primary" align="center">Edit profile</a>
+</div>
+<br>
+
+{% include "footer.html" %}
+
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% from "_formhelpers.html" import render_field %}
+
+{% block title %} Add sensor{{ super() }} {% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <br/>
+    <br/>
+    <div class="row">
+        <div class="col-sm-4"></div>
+        <div class="col-sm-4">
+            <form action="{{ url_for('settings_edit') }}" method="post">
+                {{ form.csrf_token }}
+
+                {{ render_field(form.enable_worktime, class="radio", style="list-style-type: none") }}
+
+                {{ render_field(form.lower_boundary) }}
+                {{ render_field(form.upper_boundary) }}
+                {{ render_field(form.base_salary) }}
+                {{ render_field(form.extended_salary) }}
+                {{ render_field(form.currency) }}
+                <br>
+                <br>
+                <p class="text-center"><input class="btn btn-default" type="submit" value="Save settings"></p>
+            </form>
+            <p>{{error}}</p>
+        </div>
+        <div class="col-sm-4"></div>
+        <div class="col-sm-4">
+        </div>
+    </div>
+</div>
+
+{% include "footer.html" %}
+
+{% endblock %}

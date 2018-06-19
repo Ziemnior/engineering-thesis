@@ -1,0 +1,58 @@
+{% from "_formhelpers.html" import render_field %}
+{% extends "base.html" %}
+
+{% block title %}User salary{{ super() }}{% endblock %}
+
+{% block content %}
+
+{% with active_page = "salary" %}
+{% include "user-profile-nav.html" %}
+{% endwith %}
+
+<h4>User salary
+    <a href="{{ url_for('user_salary_print', id=user.id) }}"
+       class="btn btn-primary btn-xs">Printable version</a></h4>
+<br>
+
+{% include "salary-chart.html" %}
+
+<br>
+
+{% if salary !={} %}
+
+<table class="table">
+    <tr>
+        <th>Settlement period</th>
+        <th>Regular time</th>
+        <th>Overtime</th>
+        <th>Basic salary</th>
+        <th>Extended salary</th>
+        <th>Total numer of hours</th>
+        <th>Total salary</th>
+    </tr>
+    <tr>
+        {% for key, value in salary.items() %}
+        <td>{{ key[0]|int_to_month }} {{ key[1] }}</td>
+        <td>{{ value|int }} ({{ value|int_to_hour }}) hours</td>
+        <td>{{ extened_salary[key]|int * overtime_status|int }} ({{ extened_salary[key]|int_to_hour *
+            overtime_status|int }}) hours</td>
+        <td>{{ (value|int) * base_rate|int }} {{ currency }}</td>
+        <td>{{ (extened_salary[key]|int) * extended_rate|int * overtime_status|int }} {{ currency }}</td>
+        <td>{{ (value|int) + (extened_salary[key])|int * overtime_status|int}} hours</td>
+        <td>{{ ((value|int) * base_rate|int) + ((extened_salary[key]|int) * extended_rate|int * overtime_status|int) }}
+            {{ currency }}</td>
+    </tr>
+    {% endfor %}
+
+</table>
+
+{% else %}
+
+Nothing to show.
+
+{% endif %}
+
+{% include "footer.html" %}
+
+{% endblock %}
+

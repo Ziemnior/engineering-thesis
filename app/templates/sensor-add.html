@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% from "_formhelpers.html" import render_field %}
+
+{% block title %} Add sensor{{ super() }} {% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <br/>
+    <br/>
+    <div class="row">
+        <div class="col-sm-4"></div>
+        <div class="col-sm-4">
+            <form action="/addsensor" method="post">
+                {{ form.csrf_token }}
+                {{ render_field(form.sensor_gateway) }}
+                {{ render_field(form.sensor_place) }}
+                {{ render_field(form.sensor_id) }}
+                <div align="right">
+                    <input class="btn btn-default" type="submit" value="Add new sensor">
+                </div>
+            </form>
+            <p>{{error}}</p>
+        </div>
+        <div class="col-sm-4"></div>
+        <div class="col-sm-4">
+        </div>
+    </div>
+</div>
+
+{% include "footer.html" %}
+
+{% endblock %}

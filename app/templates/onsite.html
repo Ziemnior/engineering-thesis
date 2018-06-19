@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% from "_formhelpers.html" import render_field %}
+
+{% block title %} Pepole currently at work{{ super() }} {% endblock %}
+
+{% block content %}
+<div class="container">
+<div class="row">
+    <div class="col-sm-offset-3 col-sm-6">
+
+        {% if people != [] %}
+        <table class="table">
+            <tr>
+                <th>Pepole currently at work</th>
+            </tr>
+            {% for human in people %}
+            <tr>
+                <td> {{ human }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        {% else %}
+
+        No one is at work currently.
+
+        {% endif %}
+
+    </div>
+</div>
+</div>
+
+{% include "footer.html" %}
+
+{% endblock %}
+

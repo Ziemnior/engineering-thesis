@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% from "_formhelpers.html" import render_field %}
+
+{% block title %} Login{{ super() }} {% endblock %}
+
+{% block content %}
+
+<body>
+<div class="container">
+    <p> {{ error }} </p>
+    <div class="row">
+        <div class="col-sm-offset-4 col-sm-4 text-center">
+            <h3 class="form-signin-heading">Please Sign In</h3>
+            <br>
+            <form action="/login" method="POST" align="center">
+                {{ form.csrf_token }}
+                {{ render_field(form.email) }}
+                {{ render_field(form.password) }}
+                <button class="btn btn-lg btn-primary btn-block" name="Submit" value="Login" type="Submit">Login
+                </button>
+                <br>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+
+{% include "footer.html" %}
+
+{% endblock %}

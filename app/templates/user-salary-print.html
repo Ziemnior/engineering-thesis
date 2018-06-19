@@ -1,0 +1,77 @@
+{% extends "bootstrap/base.html" %}
+
+{% block title %}Salary  - {{ user.name }} {{ user.surname }}{% endblock %}
+
+{% block content %}
+
+<div align="center">
+    <h2><u>Salary</u></h2>
+    <h4>generated
+        <script>document.write(new Date().toLocaleString())</script>
+    </h4>
+</div>
+
+<br>
+<br>
+
+<div align="left" style="margin-right: 60%">
+    <table class="table" style="width: auto;  margin: auto;">
+        <tr>
+            <td><b>Name</b></td>
+            <td>{{ user.name }}</td>
+        </tr>
+        <tr>
+            <td><b>Surname</b></td>
+            <td>{{ user.surname }}</td>
+        </tr>
+    </table>
+</div>
+
+<br>
+<br>
+
+{% if work_time !={} %}
+
+<table class="table table-bordered table-inverse" style="width: auto ;  margin: 10px auto">
+    <tr>
+        <th>Settlement period</th>
+        <th>Regular time</th>
+        <th>Overtime</th>
+        <th>Basic salary</th>
+        <th>Extended salary</th>
+        <th>Total numer of hours</th>
+        <th>Total salary</th>
+    </tr>
+    <tr>
+        {% for key, value in salary.items() %}
+        <td>{{ key[0]|int_to_month }} {{ key[1] }}</td>
+        <td>{{ value|int }} ({{ value|int_to_hour }}) hours</td>
+        <td>{{ extened_salary[key]|int * overtime_status|int }} ({{ extened_salary[key]|int_to_hour *
+            overtime_status|int }}) hours</td>
+        <td>{{ (value|int) * base_rate|int }} {{ currency }}</td>
+        <td>{{ (extened_salary[key]|int) * extended_rate|int * overtime_status|int }} {{ currency }}</td>
+        <td>{{ (value|int) + (extened_salary[key])|int * overtime_status|int}} hours</td>
+        <td>{{ ((value|int) * base_rate|int) + ((extened_salary[key]|int) * extended_rate|int * overtime_status|int) }}
+            {{ currency }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<br>
+<br>
+<div align="right" style="margin-left: 20%">
+    <b>Date and signature:</b> .............................
+    <br>
+    <b>Supervisor signature:</b> ..............................
+</div>
+
+{% else %}
+
+Nothing to show.
+
+{% endif %}
+
+{% endblock %}
+
+
+

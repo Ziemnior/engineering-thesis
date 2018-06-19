@@ -1,0 +1,39 @@
+{% from "_formhelpers.html" import render_field %}
+{% extends "base.html" %}
+
+{% block title %}Users{{ super() }}{% endblock %}
+
+{% block content %}
+<div class="row">
+<div class="col-sm-offset-3 col-sm-6">
+{% if users != [] %}
+<table class="table">
+    <tr>
+        <th>First and last name</th>
+        <th>User ID</th>
+    </tr>
+    {% for user in users %}
+    <tr>
+        <td><a href="/user-profile/{{ user.id  }}" {% if user.role== 'admin' %} class="text-danger" {%
+            endif %}>{{ user.name }} {{ user.surname }}
+        </td>
+        </a>
+        <td> {{ user.card_id }}</td>
+    </tr>
+    {% endfor %}
+</table>
+<div class="text-center">
+    <a href="{{ url_for('onsite') }}" class="btn btn-warning">People currently at work</a>
+</div>
+{% else %}
+
+No users to display.
+
+{% endif %}
+
+</div>
+</div>
+{% include "footer.html" %}
+
+{% endblock %}
+

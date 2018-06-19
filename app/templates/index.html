@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %} Home{{ super() }} {% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-1"></div>
+        <div class="col-lg-10">
+            <div class="jumbotron">
+                <h2 class="text-center">Welcome to <u>work time control</u> system homepage</h2>
+                <br>
+                {% if current_user.is_anonymous %}
+                <p>After logging in, you will be able to see your work entries and exits, look up every completed shift
+                    and check your monthly salary, with overtime included.
+                    {% elif current_user.is_authenticated %}
+                    {% if current_user.role == 'user' %}
+                <h4 class="text-center"><a class="btn btn-primary btn-lg"
+                                           href="{{ url_for('user_profile', id=current_user.id) }}" role="button">Proceed
+                    to your profile</a></h4>
+                {% elif current_user.role == 'admin' %}
+                Welcome. As an <h7 style="color: red;">admin</h7>, you have been granted privilige to:
+                <li>Add new sensors</li>
+                <li>Register new users</li>
+                <li>Browse all users and edit their profiles (including deletion)</li>
+                <li>Check who's at work currently</li>
+                <li>Browse all records (including deletion)</li>
+                {% endif %}
+                {% endif %}
+            </div>
+        </div>
+        <div class="col-lg-1"></div>
+    </div>
+</div>
+
+{% include "footer.html" %}
+
+{% endblock %}
+

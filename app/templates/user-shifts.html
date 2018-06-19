@@ -1,0 +1,51 @@
+{% from "_formhelpers.html" import render_field %}
+{% extends "base.html" %}
+
+{% block title %}User profile{{ super() }}{% endblock %}
+
+{% block content %}
+
+{% with active_page = "shifts" %}
+{% include "user-profile-nav.html" %}
+{% endwith %}
+
+<h4>User shifts (Total: {{ work_time|length }}</a>) <a href="{{ url_for('user_shifts_print', id=user.id) }}"
+                                                      class="btn btn-primary btn-xs">Printable version</a></h4>
+
+<br>
+<br>
+
+{% include "shift-chart.html" %}
+
+<br>
+
+{% if work_time !={} %}
+
+<table class="table">
+    <tr>
+        <th>Entered</th>
+        <th>Left</th>
+        <th>Work duration (hh:mm)</th>
+        <th>Overtime (hh:mm)</th>
+    </tr>
+    <tr>
+        {% for key, elem in work_time.items() %}
+        <td>{{ elem[2].strftime('%Y-%m-%d %H:%M:%S') }}</td>
+        <td>{{ elem[1].strftime('%Y-%m-%d %H:%M:%S') }}</td>
+        <td>{{ elem[0] }}</td>
+        <td>{{ overtime[key][0] * overtime_status|int }}</td>
+    </tr>
+    {% endfor %}
+
+</table>
+
+{% else %}
+
+No shifts registered for this user yet.
+
+{% endif %}
+
+{% include "footer.html" %}
+
+{% endblock %}
+
